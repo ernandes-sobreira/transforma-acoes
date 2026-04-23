@@ -28,17 +28,61 @@ header{background:linear-gradient(135deg,#0f1a33 0%,#1a2650 60%,#0f1a33 100%);bo
 .badge{background:var(--chip);border:1px solid var(--border);padding:5px 10px;border-radius:999px;font-size:11px;color:var(--muted)}
 .badge strong{color:var(--text)}
 
-/* Seletor de projeto (topo) */
-.project-switcher{background:var(--panel);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;gap:10px;overflow-x:auto;align-items:center}
-.project-switcher .label{color:var(--muted);font-size:12px;margin-right:8px;white-space:nowrap}
-.proj-pill{background:var(--panel-2);border:2px solid var(--border);color:var(--text);padding:10px 16px;border-radius:10px;cursor:pointer;font-size:13px;white-space:nowrap;font-family:inherit;display:flex;align-items:center;gap:10px;transition:all .18s}
-.proj-pill:hover{border-color:var(--accent)}
-.proj-pill.active{border-color:var(--accent);background:rgba(78,161,255,.1)}
-.proj-pill.active[data-proj="ta"]{border-color:var(--accent)}
-.proj-pill.active[data-proj="cop"]{border-color:var(--mpe);background:var(--mpe-bg)}
-.proj-pill-dot{width:10px;height:10px;border-radius:50%;flex:none}
-.proj-ta-dot{background:linear-gradient(135deg,var(--capes),var(--fapemat))}
-.proj-cop-dot{background:var(--mpe)}
+/* ========== SELETOR DE PROJETO SUPER VISÍVEL ========== */
+.project-hero{
+  background:var(--panel);border-bottom:1px solid var(--border);
+  padding:16px 28px;
+}
+.project-hero-title{
+  color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;
+  margin:0 0 10px;font-weight:600;
+}
+.project-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.proj-card{
+  background:var(--panel-2);border:2px solid var(--border);
+  padding:14px 16px;border-radius:10px;cursor:pointer;
+  color:var(--text);text-align:left;font-family:inherit;
+  display:flex;gap:12px;align-items:center;transition:all .2s;
+  position:relative;overflow:hidden;
+}
+.proj-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.proj-card.active{transform:translateY(-2px)}
+.proj-card[data-proj="ta"].active{border-color:var(--accent);background:linear-gradient(135deg,rgba(31,111,235,.15),rgba(46,160,67,.15))}
+.proj-card[data-proj="cop"].active{border-color:var(--mpe);background:var(--mpe-bg)}
+.proj-card-icon{
+  width:44px;height:44px;border-radius:10px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:800;color:#fff;
+}
+.proj-card[data-proj="ta"] .proj-card-icon{background:linear-gradient(135deg,var(--capes),var(--fapemat))}
+.proj-card[data-proj="cop"] .proj-card-icon{background:var(--mpe)}
+.proj-card-info{flex:1;min-width:0}
+.proj-card-info .pc-name{font-weight:700;font-size:14px;margin-bottom:2px}
+.proj-card-info .pc-meta{color:var(--muted);font-size:11px;display:flex;flex-wrap:wrap;gap:8px}
+.proj-card-info .pc-meta strong{color:var(--text)}
+.proj-card-active-dot{
+  position:absolute;top:8px;right:10px;width:8px;height:8px;border-radius:50%;
+  background:transparent;transition:all .2s;
+}
+.proj-card.active .proj-card-active-dot{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+
+/* ========== BARRA DE RESUMO DAS 3 FONTES (sempre visível) ========== */
+.sources-summary{
+  background:var(--panel-2);border-bottom:1px solid var(--border);
+  padding:10px 28px;display:flex;gap:14px;overflow-x:auto;align-items:center;
+}
+.sources-summary .ss-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;font-weight:600}
+.src-pill{
+  display:flex;align-items:center;gap:8px;padding:6px 12px;
+  background:var(--panel);border:1px solid var(--border);border-radius:999px;
+  font-size:12px;white-space:nowrap;
+}
+.src-pill .src-dot{width:8px;height:8px;border-radius:50%;flex:none}
+.src-pill.capes .src-dot{background:var(--capes)}
+.src-pill.fapemat .src-dot{background:var(--fapemat)}
+.src-pill.mpe .src-dot{background:var(--mpe)}
+.src-pill strong{color:var(--text)}
+.src-pill span{color:var(--muted)}
 
 nav.tabs{display:flex;gap:2px;padding:0 28px;background:var(--panel);border-bottom:1px solid var(--border);overflow-x:auto}
 nav.tabs button{background:none;border:none;color:var(--muted);padding:14px 16px;font-size:13px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-weight:500;font-family:inherit}
@@ -76,18 +120,16 @@ h2.section-title .dot{width:10px;height:10px;border-radius:50%;background:var(--
 .bar.mpe > span{background:var(--mpe)}
 .bar.ok > span{background:var(--ok)}
 
-/* Source selector */
+/* Source selector (dentro aba itens) */
 .source-selector{display:flex;gap:10px;margin:0 0 18px;flex-wrap:wrap}
 .source-btn{flex:1;min-width:220px;padding:14px 16px;border-radius:10px;border:2px solid var(--border);background:var(--panel);cursor:pointer;color:var(--text);text-align:left;font-size:13px;transition:all .15s;display:flex;align-items:center;gap:12px;font-family:inherit}
 .source-btn:hover{border-color:var(--accent)}
 .source-btn.active.capes{border-color:var(--capes);background:var(--capes-bg)}
 .source-btn.active.fapemat{border-color:var(--fapemat);background:var(--fapemat-bg)}
-.source-btn.active.mpe{border-color:var(--mpe);background:var(--mpe-bg)}
 .source-btn.active[data-source="todos"]{border-color:var(--accent);background:rgba(78,161,255,.1)}
 .source-btn-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#fff;flex:none}
 .source-btn.capes .source-btn-icon{background:var(--capes)}
 .source-btn.fapemat .source-btn-icon{background:var(--fapemat)}
-.source-btn.mpe .source-btn-icon{background:var(--mpe)}
 .source-btn-info strong{display:block;font-size:14px;margin-bottom:2px}
 .source-btn-info span{color:var(--muted);font-size:11px}
 
@@ -160,7 +202,7 @@ tfoot td{padding:12px;background:var(--panel-2);font-weight:700;font-size:13px}
 .alert.mpe{background:var(--mpe-bg);border-color:var(--mpe)}
 .alert-icon{font-size:18px;line-height:1}
 
-/* Checklist de objetivos */
+/* Checklist */
 .check-item{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
 .check-item:last-child{border-bottom:none}
 .check-item:hover{background:var(--panel-2)}
@@ -188,7 +230,6 @@ tfoot td{padding:12px;background:var(--panel-2);font-weight:700;font-size:13px}
 .gantt-today-line{position:absolute;top:0;bottom:0;width:2px;background:var(--warn);z-index:3;pointer-events:none}
 .gantt-today-label{position:absolute;top:-4px;background:var(--warn);color:#0b1220;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;white-space:nowrap;transform:translateX(-50%)}
 
-/* Progresso */
 .progress-big{display:flex;align-items:center;gap:14px;padding:12px 0}
 .progress-ring{width:60px;height:60px;flex:none;position:relative}
 .progress-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
@@ -197,10 +238,6 @@ tfoot td{padding:12px;background:var(--panel-2);font-weight:700;font-size:13px}
 .progress-ring .fg-ring{stroke:var(--accent-2);stroke-linecap:round;transition:stroke-dashoffset .6s}
 .progress-ring .pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:700}
 
-/* Time label */
-.time-label{display:inline-block;padding:2px 8px;background:var(--chip);border-radius:4px;font-size:10px;color:var(--muted);margin-left:6px;font-variant-numeric:tabular-nums}
-
-/* Team badges */
 .team-table td{padding:9px 10px;font-size:12px;vertical-align:top}
 .team-name{font-weight:600}
 .team-ppg{color:var(--muted);font-size:11px}
@@ -239,23 +276,54 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
   </div>
 </header>
 
-<div class="project-switcher">
-  <span class="label">Projeto ativo:</span>
-  <button class="proj-pill active" data-proj="ta">
-    <span class="proj-pill-dot proj-ta-dot"></span>
-    <span><strong>Transforma-Ações</strong> · CAPES + FAPEMAT · R$ 479.400</span>
-  </button>
-  <button class="proj-pill" data-proj="cop">
-    <span class="proj-pill-dot proj-cop-dot"></span>
-    <span><strong>COP Pantanal</strong> · MPE/BAPRE · R$ 65.000</span>
-  </button>
+<!-- SELETOR DE PROJETO SUPER VISÍVEL -->
+<div class="project-hero">
+  <p class="project-hero-title">📁 Selecione o projeto para visualizar</p>
+  <div class="project-cards">
+    <button class="proj-card active" data-proj="ta">
+      <div class="proj-card-icon">📚</div>
+      <div class="proj-card-info">
+        <div class="pc-name">Transforma-Ações</div>
+        <div class="pc-meta">
+          <span><strong>CAPES</strong> R$ 239.700</span>
+          <span>+</span>
+          <span><strong>FAPEMAT</strong> R$ 239.700</span>
+        </div>
+        <div class="pc-meta" style="margin-top:4px">
+          <strong style="color:var(--text)">Total: R$ 479.400,00</strong>
+        </div>
+      </div>
+      <span class="proj-card-active-dot"></span>
+    </button>
+    <button class="proj-card" data-proj="cop">
+      <div class="proj-card-icon">🌿</div>
+      <div class="proj-card-info">
+        <div class="pc-name">COP Pantanal</div>
+        <div class="pc-meta">
+          <span><strong>MP / BAPRE</strong> (Ministério Público)</span>
+        </div>
+        <div class="pc-meta" style="margin-top:4px">
+          <strong style="color:var(--text)">Total: R$ 65.000,00</strong>
+        </div>
+      </div>
+      <span class="proj-card-active-dot"></span>
+    </button>
+  </div>
 </div>
 
-<nav class="tabs" id="navTabs">
-  <!-- Preenchido dinamicamente por projeto -->
-</nav>
+<!-- BARRA DE RESUMO DAS 3 FONTES -->
+<div class="sources-summary">
+  <span class="ss-label">3 Fontes Ativas:</span>
+  <span class="src-pill capes"><span class="src-dot"></span><strong>CAPES</strong> <span>R$ 239.700,00</span></span>
+  <span class="src-pill fapemat"><span class="src-dot"></span><strong>FAPEMAT</strong> <span>R$ 239.700,00</span></span>
+  <span class="src-pill mpe"><span class="src-dot"></span><strong>MP / BAPRE</strong> <span>R$ 65.000,00</span></span>
+  <span class="src-pill" style="background:linear-gradient(135deg,rgba(78,161,255,.15),rgba(122,210,122,.15));border-color:var(--accent)"><strong>Total Geral:</strong> <span style="color:var(--text);font-weight:700">R$ 544.400,00</span></span>
+</div>
+
+<nav class="tabs" id="navTabs"></nav>
 
 <main id="appMain">
+
 <!-- ============================================================ -->
 <!-- ======================== PROJETO TA ======================== -->
 <!-- ============================================================ -->
@@ -266,21 +334,9 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
   <p class="section-sub">"Integrando Saberes para Ações Sustentáveis" — PROEXT-PG com contrapartida FAPEMAT. Duração: 24 meses (início 01/11/2025).</p>
 
   <div class="grid cols-4">
-    <div class="card capes">
-      <h3>Orçamento CAPES</h3>
-      <p class="kpi">R$ 239.700,00</p>
-      <p class="kpi-sub">6 rubricas de custeio</p>
-    </div>
-    <div class="card fapemat">
-      <h3>Orçamento FAPEMAT</h3>
-      <p class="kpi">R$ 239.700,00</p>
-      <p class="kpi-sub">Custeio + Permanente</p>
-    </div>
-    <div class="card">
-      <h3>Total do Projeto</h3>
-      <p class="kpi">R$ 479.400,00</p>
-      <p class="kpi-sub">CAPES + FAPEMAT (1:1)</p>
-    </div>
+    <div class="card capes"><h3>Orçamento CAPES</h3><p class="kpi">R$ 239.700,00</p><p class="kpi-sub">6 rubricas de custeio</p></div>
+    <div class="card fapemat"><h3>Orçamento FAPEMAT</h3><p class="kpi">R$ 239.700,00</p><p class="kpi-sub">Custeio + Permanente</p></div>
+    <div class="card"><h3>Total do Projeto</h3><p class="kpi">R$ 479.400,00</p><p class="kpi-sub">CAPES + FAPEMAT (1:1)</p></div>
     <div class="card unemat">
       <h3>Execução de Atividades</h3>
       <div class="progress-big">
@@ -300,17 +356,11 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
     <div class="card">
       <h3>Distribuição CAPES vs FAPEMAT</h3>
       <div style="margin-top:10px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-          <span>🔵 CAPES (PROEXT-PG)</span>
-          <span style="color:var(--muted)">R$ 239.700,00 · 50%</span>
-        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>🔵 CAPES</span><span style="color:var(--muted)">R$ 239.700,00 · 50%</span></div>
         <div class="bar capes"><span style="width:50%"></span></div>
       </div>
       <div style="margin-top:12px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-          <span>🟢 FAPEMAT (Contrapartida)</span>
-          <span style="color:var(--muted)">R$ 239.700,00 · 50%</span>
-        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>🟢 FAPEMAT</span><span style="color:var(--muted)">R$ 239.700,00 · 50%</span></div>
         <div class="bar fapemat"><span style="width:50%"></span></div>
       </div>
       <hr style="border-color:var(--border);margin:16px 0">
@@ -325,7 +375,7 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
       <ul class="obj-list" style="margin-top:4px">
         <li><div class="obj-num">!</div><div><strong>Fontes separadas:</strong> CAPES e FAPEMAT exigem prestações de contas independentes.</div></li>
         <li><div class="obj-num">!</div><div><strong>FAPEMAT:</strong> única fonte com material permanente (R$ 21.200,00).</div></li>
-        <li><div class="obj-num">!</div><div><strong>Concentração Ano 1:</strong> R$ 221.247,50 da FAPEMAT (92%) será executado nos primeiros 12 meses.</div></li>
+        <li><div class="obj-num">!</div><div><strong>Concentração Ano 1:</strong> R$ 221.247,50 da FAPEMAT (92%) nos primeiros 12 meses.</div></li>
       </ul>
     </div>
   </div>
@@ -365,12 +415,7 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
     <table id="tabelaItens">
       <thead><tr id="theadItens"></tr></thead>
       <tbody id="corpoItens"></tbody>
-      <tfoot>
-        <tr>
-          <td id="totalLabel" style="text-align:right"></td>
-          <td class="num" id="totalValor"></td>
-        </tr>
-      </tfoot>
+      <tfoot><tr><td id="totalLabel" style="text-align:right"></td><td class="num" id="totalValor"></td></tr></tfoot>
     </table>
   </div>
 
@@ -426,14 +471,14 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
     <h3>Orçamento Detalhado FAPEMAT — Todas as Rubricas</h3>
     <div class="table-wrap" style="margin-top:8px;border:1px solid var(--border)">
       <table>
-        <thead><tr><th>Elemento de Despesa</th><th>Natureza</th><th style="text-align:right">Valor (R$)</th><th style="text-align:right">% do total</th></tr></thead>
+        <thead><tr><th>Elemento de Despesa</th><th>Natureza</th><th style="text-align:right">Valor (R$)</th><th style="text-align:right">%</th></tr></thead>
         <tbody>
           <tr><td>Material de Consumo</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num">91.063,50</td><td class="num">38,0%</td></tr>
           <tr><td>Outros Serviços de Terceiros</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num">69.000,00</td><td class="num">28,8%</td></tr>
           <tr><td>Diárias</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num">51.936,50</td><td class="num">21,7%</td></tr>
           <tr><td>Equipamentos e Material Permanente</td><td class="natureza"><span class="nat-permanente">Permanente</span></td><td class="num">21.200,00</td><td class="num">8,8%</td></tr>
           <tr><td>Passagens</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num">6.500,00</td><td class="num">2,7%</td></tr>
-          <tr><td style="color:var(--muted)">Hospedagem / Alimentação</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num" style="color:var(--muted)">—</td><td class="num" style="color:var(--muted)">—</td></tr>
+          <tr><td style="color:var(--muted)">Hospedagem / Alimentação</td><td></td><td class="num" style="color:var(--muted)">—</td><td class="num" style="color:var(--muted)">—</td></tr>
           <tr><td style="color:var(--muted)">Pessoal / Encargos / Bolsas</td><td></td><td class="num" style="color:var(--muted)">—</td><td class="num" style="color:var(--muted)">—</td></tr>
         </tbody>
         <tfoot><tr><td colspan="2" style="text-align:right"><strong>TOTAL FAPEMAT:</strong></td><td class="num" style="color:var(--fapemat)"><strong>R$ 239.700,00</strong></td><td></td></tr></tfoot>
@@ -476,7 +521,7 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
 
   <div class="alert fapemat" style="margin-top:16px">
     <span class="alert-icon">⚠️</span>
-    <div><strong>Atenção à concentração:</strong> 84% do orçamento FAPEMAT é executado no 1º trimestre (material de consumo R$ 91k + serviços R$ 69k + permanente R$ 21k = R$ 181.263,50 em novembro/25-janeiro/26). Planejamento de compras e contratações deve estar pronto no início.</div>
+    <div><strong>Atenção à concentração:</strong> 84% do orçamento FAPEMAT é executado no 1º trimestre (material de consumo R$ 91k + serviços R$ 69k + permanente R$ 21k = R$ 181.263,50 em nov/25-jan/26). Planejamento de compras e contratações deve estar pronto no início.</div>
   </div>
 </section>
 
@@ -484,9 +529,7 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
   <h2 class="section-title"><span class="dot"></span>Cronograma Gantt · Transforma-Ações</h2>
   <p class="section-sub">Cronograma oficial FAPEMAT · 8 atividades · 24 meses · marque atividades concluídas no checklist abaixo.</p>
 
-  <div class="gantt-wrap">
-    <div class="gantt" id="ganttTA"></div>
-  </div>
+  <div class="gantt-wrap"><div class="gantt" id="ganttTA"></div></div>
 
   <div class="card" style="margin-top:16px">
     <h3>Checklist de Atividades — Marque o que já foi feito</h3>
@@ -608,10 +651,10 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
 
 <section class="section active" id="cop-dashboard">
   <h2 class="section-title"><span class="dot" style="background:var(--mpe)"></span>COP Pantanal · Visão Geral</h2>
-  <p class="section-sub">"Saberes e Ações pelo Clima" · 10-12 de novembro de 2025, Cáceres-MT · Via BAPRE/MPE · Mobilização de 5.000 pessoas.</p>
+  <p class="section-sub">"Saberes e Ações pelo Clima" · 10-12 de novembro de 2025, Cáceres-MT · <strong style="color:var(--mpe)">Recurso do Ministério Público Estadual via BAPRE</strong> · Mobilização de 5.000 pessoas.</p>
 
   <div class="grid cols-4">
-    <div class="card mpe"><h3>Valor Solicitado</h3><p class="kpi">R$ 65.000,00</p><p class="kpi-sub">MPE via BAPRE</p></div>
+    <div class="card mpe"><h3>Valor Solicitado ao MP</h3><p class="kpi">R$ 65.000,00</p><p class="kpi-sub">MPE via BAPRE</p></div>
     <div class="card mpe"><h3>Duração do Evento</h3><p class="kpi">3 dias</p><p class="kpi-sub">10–12 nov/2025</p></div>
     <div class="card mpe"><h3>Mobilização</h3><p class="kpi">5.000</p><p class="kpi-sub">pessoas esperadas</p></div>
     <div class="card unemat">
@@ -624,6 +667,11 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
         <div><p class="kpi-sub" id="copProgressLabel">0 de 3 etapas</p></div>
       </div>
     </div>
+  </div>
+
+  <div class="alert mpe" style="margin-top:16px">
+    <span class="alert-icon">💜</span>
+    <div><strong>Fonte única:</strong> Este projeto é financiado <u>exclusivamente pelo Ministério Público Estadual (MPE)</u> através do <strong>Banco de Projetos e Entidades (BAPRE)</strong>. Prestação de contas específica conforme Atos 897 e 959/2020-PGJ. Toda NF identificada como <strong>MP — COP Pantanal</strong>. Execução estrita conforme Termo de Abertura do Projeto (TAP).</div>
   </div>
 
   <div class="grid cols-2" style="margin-top:16px">
@@ -645,8 +693,8 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
 </section>
 
 <section class="section" id="cop-itens">
-  <h2 class="section-title"><span class="dot" style="background:var(--mpe)"></span>Itens de Custo · COP Pantanal</h2>
-  <p class="section-sub">5 rubricas solicitadas ao MPE via BAPRE — totalizando R$ 65.000,00.</p>
+  <h2 class="section-title"><span class="dot" style="background:var(--mpe)"></span>Itens de Custo · COP Pantanal / MP</h2>
+  <p class="section-sub">5 rubricas solicitadas ao Ministério Público via BAPRE — totalizando R$ 65.000,00 · gasto conforme projeto aprovado.</p>
 
   <div class="table-wrap">
     <table>
@@ -658,13 +706,13 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
         <tr><td>4</td><td><strong>Deslocamento de grupos sociais</strong> — transporte terrestre de comunidades indígenas, quilombolas, pescadores, agricultores; combustível e fretamento de ônibus/vans.</td><td class="cat"><span class="cat-passagens">Deslocamento</span></td><td class="num">10.000,00</td><td class="num">15,4%</td></tr>
         <tr><td>5</td><td><strong>Comunicação e mobilização</strong> — materiais gráficos e digitais, rádios comunitárias, carros de som, mídias sociais locais.</td><td class="cat"><span class="cat-comunicacao">Comunicação</span></td><td class="num">5.000,00</td><td class="num">7,7%</td></tr>
       </tbody>
-      <tfoot><tr><td colspan="3" style="text-align:right">TOTAL SOLICITADO AO MPE:</td><td class="num" style="color:var(--mpe)">R$ 65.000,00</td><td></td></tr></tfoot>
+      <tfoot><tr><td colspan="3" style="text-align:right">TOTAL SOLICITADO AO MP:</td><td class="num" style="color:var(--mpe)">R$ 65.000,00</td><td></td></tr></tfoot>
     </table>
   </div>
 
   <div class="alert mpe" style="margin-top:16px">
     <span class="alert-icon">💜</span>
-    <div><strong>Regra MPE/BAPRE:</strong> Recurso do Ministério Público Estadual via Banco de Projetos e Entidades. Prestação de contas específica conforme Atos 897 e 959/2020-PGJ. Toda NF identificada como <strong>MPE — COP Pantanal</strong>.</div>
+    <div><strong>Regra MPE/BAPRE:</strong> Recurso do Ministério Público Estadual via Banco de Projetos e Entidades. Prestação de contas específica conforme Atos 897 e 959/2020-PGJ. Toda NF identificada como <strong>MPE — COP Pantanal</strong>. <u>Gastar estritamente conforme as 5 rubricas acima</u>.</div>
   </div>
 </section>
 
@@ -672,9 +720,7 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
   <h2 class="section-title"><span class="dot" style="background:var(--mpe)"></span>Cronograma · COP Pantanal</h2>
   <p class="section-sub">3 etapas · marcos temporais principais.</p>
 
-  <div class="gantt-wrap">
-    <div class="gantt" id="ganttCOP"></div>
-  </div>
+  <div class="gantt-wrap"><div class="gantt" id="ganttCOP"></div></div>
 
   <div class="card" style="margin-top:16px">
     <h3>Checklist de Etapas e Marcos — Marque o que já foi feito</h3>
@@ -740,11 +786,7 @@ footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);fo
 </footer>
 
 <script>
-/* ============================================================
-   DADOS — TRANSFORMA-AÇÕES
-============================================================ */
-
-// CAPES: 6 rubricas (R$ 239.700,00)
+/* DADOS */
 const itensCapes = [
   {i:1, d:"Material de consumo",                q:1, u:61410.00, c:"consumo",    nat:"custeio", fonte:"capes"},
   {i:2, d:"Serviços terceirizados",             q:1, u:29890.00, c:"servicos",   nat:"custeio", fonte:"capes"},
@@ -754,94 +796,80 @@ const itensCapes = [
   {i:6, d:"Custos de comunicação e divulgação", q:1, u:63000.00, c:"comunicacao",nat:"custeio", fonte:"capes"},
 ];
 
-// FAPEMAT — Materiais de Consumo (28 itens · R$ 91.063,50)
 const fapematConsumo = [
-  {d:"Tintas",                                q:50,   u:30.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
-  {d:"Pincéis diversos",                      q:50,   u:25.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
-  {d:"Paletas plásticas",                     q:20,   u:15.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
-  {d:"Aventais reutilizáveis",                q:30,   u:20.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
-  {d:"Copos biodegradáveis",                  q:1000, u:2.50,    c:"consumo",    nat:"custeio", fonte:"fapemat"},
-  {d:"Lápis de cor",                          q:50,   u:20.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Cola branca",                           q:10,   u:10.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Tesouras",                              q:10,   u:15.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Fita crepe",                            q:10,   u:15.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Tela para pintura",                     q:100,  u:55.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
-  {d:"Barbante",                              q:5,    u:20.00,   c:"consumo",    nat:"custeio", fonte:"fapemat"},
-  {d:"Saco de lixo",                          q:20,   u:15.50,   c:"limpeza",    nat:"custeio", fonte:"fapemat"},
-  {d:"Tecido para pinturas",                  q:100,  u:20.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
-  {d:"Papel cartão",                          q:100,  u:2.50,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Papel higiênico",                       q:10,   u:8.00,    c:"limpeza",    nat:"custeio", fonte:"fapemat"},
-  {d:"Borracha",                              q:20,   u:2.50,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Grampeador Pneumático",                 q:1,    u:350.00,  c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Grampo p/ grampeador pneumático",       q:5,    u:50.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Fita métrica",                          q:10,   u:6.00,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Réguas",                                q:50,   u:3.50,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Extensões e filtros de linha",          q:10,   u:35.00,   c:"consumo",    nat:"custeio", fonte:"fapemat"},
-  {d:"Lápis",                                 q:20,   u:1.75,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Marcador de quadro branco",             q:30,   u:15.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Sabão líquido",                         q:5,    u:20.80,   c:"limpeza",    nat:"custeio", fonte:"fapemat"},
-  {d:"Caneta",                                q:1,    u:149.50,  c:"escritorio", nat:"custeio", fonte:"fapemat"},
-  {d:"Material de consumo (reserva)",         q:1,    u:64800.00,c:"consumo",    nat:"custeio", fonte:"fapemat"},
-  {d:"Combustível",                           q:1000, u:6.50,    c:"combustivel",nat:"custeio", fonte:"fapemat"},
-  {d:"Resmas",                                q:50,   u:40.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Tintas",q:50,u:30,c:"pintura",nat:"custeio",fonte:"fapemat"},
+  {d:"Pincéis diversos",q:50,u:25,c:"pintura",nat:"custeio",fonte:"fapemat"},
+  {d:"Paletas plásticas",q:20,u:15,c:"pintura",nat:"custeio",fonte:"fapemat"},
+  {d:"Aventais reutilizáveis",q:30,u:20,c:"pintura",nat:"custeio",fonte:"fapemat"},
+  {d:"Copos biodegradáveis",q:1000,u:2.5,c:"consumo",nat:"custeio",fonte:"fapemat"},
+  {d:"Lápis de cor",q:50,u:20,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Cola branca",q:10,u:10,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Tesouras",q:10,u:15,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Fita crepe",q:10,u:15,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Tela para pintura",q:100,u:55,c:"pintura",nat:"custeio",fonte:"fapemat"},
+  {d:"Barbante",q:5,u:20,c:"consumo",nat:"custeio",fonte:"fapemat"},
+  {d:"Saco de lixo",q:20,u:15.5,c:"limpeza",nat:"custeio",fonte:"fapemat"},
+  {d:"Tecido para pinturas",q:100,u:20,c:"pintura",nat:"custeio",fonte:"fapemat"},
+  {d:"Papel cartão",q:100,u:2.5,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Papel higiênico",q:10,u:8,c:"limpeza",nat:"custeio",fonte:"fapemat"},
+  {d:"Borracha",q:20,u:2.5,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Grampeador Pneumático",q:1,u:350,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Grampo p/ grampeador pneumático",q:5,u:50,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Fita métrica",q:10,u:6,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Réguas",q:50,u:3.5,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Extensões e filtros de linha",q:10,u:35,c:"consumo",nat:"custeio",fonte:"fapemat"},
+  {d:"Lápis",q:20,u:1.75,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Marcador de quadro branco",q:30,u:15,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Sabão líquido",q:5,u:20.8,c:"limpeza",nat:"custeio",fonte:"fapemat"},
+  {d:"Caneta",q:1,u:149.5,c:"escritorio",nat:"custeio",fonte:"fapemat"},
+  {d:"Material de consumo (reserva)",q:1,u:64800,c:"consumo",nat:"custeio",fonte:"fapemat"},
+  {d:"Combustível",q:1000,u:6.5,c:"combustivel",nat:"custeio",fonte:"fapemat"},
+  {d:"Resmas",q:50,u:40,c:"escritorio",nat:"custeio",fonte:"fapemat"},
 ];
-
-// FAPEMAT — Diárias (12 itens · R$ 51.936,50)
 const fapematDiarias = [
-  {d:"Diárias · Tangará da Serra/MT (15× R$302,50) — mês 18",  q:15, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Nova Xavantina/MT (15× R$302,50) — mês 1",     q:15, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · São Paulo/SP (11× R$581,00) — mês 12",         q:11, u:581.00, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Cuiabá/MT (20× R$302,50) — mês 22",            q:20, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Cuiabá/MT (20× R$302,50) — mês 1",             q:20, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Sinop/MT (11× R$302,50) — mês 1",              q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Brasília/DF (5,5× R$581,00) — mês 3",          q:5.5, u:581.00, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Tangará da Serra/MT (11× R$302,50) — mês 4",   q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Nova Xavantina/MT (11× R$302,50) — mês 5",     q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Barra do Bugres/MT (11× R$302,50) — mês 6",    q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Cuiabá/MT (15× R$302,50) — mês 15",            q:15, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
-  {d:"Diárias · Sinop/MT (11× R$302,50) — mês 17",             q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Tangará da Serra/MT (15× R$302,50) — mês 18",q:15,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Nova Xavantina/MT (15× R$302,50) — mês 1",q:15,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · São Paulo/SP (11× R$581,00) — mês 12",q:11,u:581,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Cuiabá/MT (20× R$302,50) — mês 22",q:20,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Cuiabá/MT (20× R$302,50) — mês 1",q:20,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Sinop/MT (11× R$302,50) — mês 1",q:11,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Brasília/DF (5,5× R$581,00) — mês 3",q:5.5,u:581,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Tangará da Serra/MT (11× R$302,50) — mês 4",q:11,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Nova Xavantina/MT (11× R$302,50) — mês 5",q:11,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Barra do Bugres/MT (11× R$302,50) — mês 6",q:11,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Cuiabá/MT (15× R$302,50) — mês 15",q:15,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
+  {d:"Diárias · Sinop/MT (11× R$302,50) — mês 17",q:11,u:302.5,c:"diarias",nat:"custeio",fonte:"fapemat"},
 ];
-
-// FAPEMAT — Passagens (2 itens · R$ 6.500,00)
 const fapematPassagens = [
-  {d:"Passagem aérea · Cuiabá ↔ Brasília (2×)",  q:2, u:1750.00, c:"passagens", nat:"custeio", fonte:"fapemat"},
-  {d:"Passagem aérea · Cuiabá ↔ São Paulo (2×)", q:2, u:1500.00, c:"passagens", nat:"custeio", fonte:"fapemat"},
+  {d:"Passagem aérea · Cuiabá ↔ Brasília (2×)",q:2,u:1750,c:"passagens",nat:"custeio",fonte:"fapemat"},
+  {d:"Passagem aérea · Cuiabá ↔ São Paulo (2×)",q:2,u:1500,c:"passagens",nat:"custeio",fonte:"fapemat"},
 ];
-
-// FAPEMAT — Serviços de Terceiros (5 itens · R$ 69.000,00)
 const fapematServicos = [
-  {d:"Diagramação editorial",     q:1, u:10000.00, c:"servicos", nat:"custeio", fonte:"fapemat"},
-  {d:"Edição de materiais",       q:1, u:10000.00, c:"servicos", nat:"custeio", fonte:"fapemat"},
-  {d:"Produção de materiais",     q:1, u:20000.00, c:"servicos", nat:"custeio", fonte:"fapemat"},
-  {d:"Auxiliar de campo",         q:1, u:7000.00,  c:"servicos", nat:"custeio", fonte:"fapemat"},
-  {d:"Impressão de materiais",    q:1, u:22000.00, c:"servicos", nat:"custeio", fonte:"fapemat"},
+  {d:"Diagramação editorial",q:1,u:10000,c:"servicos",nat:"custeio",fonte:"fapemat"},
+  {d:"Edição de materiais",q:1,u:10000,c:"servicos",nat:"custeio",fonte:"fapemat"},
+  {d:"Produção de materiais",q:1,u:20000,c:"servicos",nat:"custeio",fonte:"fapemat"},
+  {d:"Auxiliar de campo",q:1,u:7000,c:"servicos",nat:"custeio",fonte:"fapemat"},
+  {d:"Impressão de materiais",q:1,u:22000,c:"servicos",nat:"custeio",fonte:"fapemat"},
 ];
-
-// FAPEMAT — Material Permanente (4 itens · R$ 21.200,00)
 const fapematPermanente = [
-  {d:"Samsung Galaxy Book4 Notebook",                    q:2, u:5000.00, c:"permanente", nat:"permanente", fonte:"fapemat"},
-  {d:"Desktop Dell 24' All-in-One Intel Core 13ª geração", q:1, u:7000.00, c:"permanente", nat:"permanente", fonte:"fapemat"},
-  {d:"Aparelho de som Frahm CMF 670 (kit microfone+tripé)", q:1, u:3000.00, c:"permanente", nat:"permanente", fonte:"fapemat"},
-  {d:"Caixa ativa 12\" com microfone",                    q:1, u:1200.00, c:"permanente", nat:"permanente", fonte:"fapemat"},
+  {d:"Samsung Galaxy Book4 Notebook",q:2,u:5000,c:"permanente",nat:"permanente",fonte:"fapemat"},
+  {d:"Desktop Dell 24' All-in-One Intel Core 13ª geração",q:1,u:7000,c:"permanente",nat:"permanente",fonte:"fapemat"},
+  {d:"Aparelho de som Frahm CMF 670 (kit microfone+tripé)",q:1,u:3000,c:"permanente",nat:"permanente",fonte:"fapemat"},
+  {d:"Caixa ativa 12\" com microfone",q:1,u:1200,c:"permanente",nat:"permanente",fonte:"fapemat"},
 ];
+const itensFapemat = [...fapematConsumo,...fapematDiarias,...fapematPassagens,...fapematServicos,...fapematPermanente].map((it,idx)=>({...it,i:idx+1}));
 
-// Junta tudo FAPEMAT com índice sequencial
-const itensFapemat = [...fapematConsumo, ...fapematDiarias, ...fapematPassagens, ...fapematServicos, ...fapematPermanente]
-  .map((it, idx) => ({...it, i: idx+1}));
-
-/* Atividades FAPEMAT (cronograma oficial pág. 5-7 do Plano de Trabalho) */
 const atividadesTA = [
-  {id:"A1", nome:"Identificação do potencial dos PPGs para atividades de extensão", start:1,  dur:6,  resp:"Ernandes", chs:20},
-  {id:"A2", nome:"Identificação e integração de parceiros (atores sociais) nas 4 áreas", start:1, dur:12, resp:"Ernandes", chs:10},
-  {id:"A3", nome:"Integração da comunidade acadêmica com populações vulneráveis", start:1, dur:24, resp:"Ernandes", chs:4},
-  {id:"A4", nome:"Produção de material de divulgação (acadêmico e não-acadêmico)", start:1, dur:24, resp:"Ernandes", chs:8},
-  {id:"A5", nome:"Apoio à elaboração de cursos para a sociedade nas 4 áreas", start:1, dur:24, resp:"Ernandes", chs:10},
-  {id:"A6", nome:"Integralização da cultura indígena (mão dupla academia-indígenas)", start:1, dur:24, resp:"Ernandes", chs:4},
-  {id:"A7", nome:"Apoio a projetos de extensão interdisciplinares (4 áreas)", start:6, dur:12, resp:"Ernandes", chs:20},
-  {id:"A8", nome:"Criação de empresa/cooperativa/associação p/ sociedade", start:12, dur:12, resp:"Ernandes", chs:20},
+  {id:"A1",nome:"Identificação do potencial dos PPGs para atividades de extensão",start:1,dur:6,resp:"Ernandes",chs:20},
+  {id:"A2",nome:"Identificação e integração de parceiros (atores sociais) nas 4 áreas",start:1,dur:12,resp:"Ernandes",chs:10},
+  {id:"A3",nome:"Integração da comunidade acadêmica com populações vulneráveis",start:1,dur:24,resp:"Ernandes",chs:4},
+  {id:"A4",nome:"Produção de material de divulgação (acadêmico e não-acadêmico)",start:1,dur:24,resp:"Ernandes",chs:8},
+  {id:"A5",nome:"Apoio à elaboração de cursos para a sociedade nas 4 áreas",start:1,dur:24,resp:"Ernandes",chs:10},
+  {id:"A6",nome:"Integralização da cultura indígena (mão dupla academia-indígenas)",start:1,dur:24,resp:"Ernandes",chs:4},
+  {id:"A7",nome:"Apoio a projetos de extensão interdisciplinares (4 áreas)",start:6,dur:12,resp:"Ernandes",chs:20},
+  {id:"A8",nome:"Criação de empresa/cooperativa/associação p/ sociedade",start:12,dur:12,resp:"Ernandes",chs:20},
 ];
 
-/* Objetivos específicos Transforma-Ações */
 const objetivosTA = [
   "Potencializar os PPGs para atuação junto à sociedade civil",
   "Estimular colaboração entre as 4 áreas temáticas (seminários, workshops, projetos)",
@@ -852,28 +880,22 @@ const objetivosTA = [
   "Desenvolver componentes curriculares conjuntos nas 4 áreas",
 ];
 
-/* ============================================================
-   DADOS — COP PANTANAL
-============================================================ */
-
 const itensCOP = [
-  {i:1, d:"Alimentação comunitária",           u:23000, c:"alimentacao"},
-  {i:2, d:"Kits de participação e inclusão",   u:15000, c:"kits"},
-  {i:3, d:"Alojamento e acolhimento comunitário", u:12000, c:"hospedagem"},
-  {i:4, d:"Deslocamento de grupos sociais",    u:10000, c:"passagens"},
-  {i:5, d:"Comunicação e mobilização",         u:5000,  c:"comunicacao"},
+  {i:1,d:"Alimentação comunitária",u:23000,c:"alimentacao"},
+  {i:2,d:"Kits de participação e inclusão",u:15000,c:"kits"},
+  {i:3,d:"Alojamento e acolhimento comunitário",u:12000,c:"hospedagem"},
+  {i:4,d:"Deslocamento de grupos sociais",u:10000,c:"passagens"},
+  {i:5,d:"Comunicação e mobilização",u:5000,c:"comunicacao"},
 ];
 
-/* Etapas COP (cronograma oficial pág. 4-5 do TAP) */
 const etapasCOP = [
-  {id:"E1", nome:"Etapa Preparatória",    start:"2025-08-01", end:"2025-10-31", color:"mpe"},
-  {id:"E2", nome:"Execução do Evento (3 dias)", start:"2025-11-10", end:"2025-11-12", color:"mpe"},
-  {id:"E3", nome:"Etapa Pós-Evento",      start:"2025-11-13", end:"2025-12-31", color:"mpe"},
+  {id:"E1",nome:"Etapa Preparatória",start:"2025-08-01",end:"2025-10-31",color:"mpe"},
+  {id:"E2",nome:"Execução do Evento (3 dias)",start:"2025-11-10",end:"2025-11-12",color:"mpe"},
+  {id:"E3",nome:"Etapa Pós-Evento",start:"2025-11-13",end:"2025-12-31",color:"mpe"},
 ];
 
-/* Marcos (checkboxes) da COP Pantanal */
 const marcosCOP = [
-  {g:"Etapa Preparatória (ago-out/2025)", items:[
+  {g:"Etapa Preparatória (ago-out/2025)",items:[
     "Mobilização das coordenações de PPGs da UNEMAT e IFMT",
     "Envio de ofícios aos municípios do Pantanal e entorno",
     "Articulação com movimentos sociais, associações, setor privado",
@@ -882,7 +904,7 @@ const marcosCOP = [
     "Divulgação em escolas, universidades, mídias e redes sociais",
     "Recebimento de inscrições (Hacka do Clima, Pitch)",
   ]},
-  {g:"Execução (10-12/nov/2025)", items:[
+  {g:"Execução (10-12/nov/2025)",items:[
     "Dia 10/11 — Cerimônia de abertura e palestra magna",
     "Dia 10/11 — Atividades culturais e oficinas de abertura",
     "Dia 11/11 — Oficinas simultâneas (matutino/vespertino)",
@@ -893,7 +915,7 @@ const marcosCOP = [
     "Dia 12/11 — Construção coletiva da Carta do Pantanal",
     "Dia 12/11 — Leitura pública da Carta e encerramento",
   ]},
-  {g:"Pós-Evento (nov-dez/2025)", items:[
+  {g:"Pós-Evento (nov-dez/2025)",items:[
     "Sistematização dos relatórios de oficinas, mostras e pitchs",
     "Publicação e divulgação da Carta do Pantanal (digital + impresso)",
     "Envio de relatório final ao MPE e instituições parceiras",
@@ -901,7 +923,6 @@ const marcosCOP = [
   ]},
 ];
 
-/* Resultados esperados COP */
 const resultadosCOP = [
   "Mobilização regional de mais de 5.000 pessoas",
   "Integração de saberes científicos e tradicionais",
@@ -913,66 +934,55 @@ const resultadosCOP = [
 ];
 
 const catLabels = {
-  combustivel:"Combustível", pintura:"Pintura", escritorio:"Escritório",
-  limpeza:"Limpeza", consumo:"Consumo Geral", servicos:"Serv. Terceirizados",
-  diarias:"Diárias", passagens:"Passagens",
-  alimentacao:"Alimentação", comunicacao:"Comunicação",
-  permanente:"Mat. Permanente", kits:"Kits", hospedagem:"Hospedagem", outros:"Outros"
+  combustivel:"Combustível",pintura:"Pintura",escritorio:"Escritório",
+  limpeza:"Limpeza",consumo:"Consumo Geral",servicos:"Serv. Terceirizados",
+  diarias:"Diárias",passagens:"Passagens",
+  alimentacao:"Alimentação",comunicacao:"Comunicação",
+  permanente:"Mat. Permanente",kits:"Kits",hospedagem:"Hospedagem",outros:"Outros"
 };
 const catsPorFonte = {
-  capes:   ["consumo","servicos","diarias","alimentacao","comunicacao","outros"],
-  fapemat: ["consumo","combustivel","pintura","escritorio","limpeza","diarias","passagens","servicos","permanente"],
-  todos:   Object.keys(catLabels)
+  capes:["consumo","servicos","diarias","alimentacao","comunicacao","outros"],
+  fapemat:["consumo","combustivel","pintura","escritorio","limpeza","diarias","passagens","servicos","permanente"],
+  todos:Object.keys(catLabels)
 };
 
-/* ============================================================
-   ESTADO / STORAGE
-============================================================ */
+const STORAGE_KEY="transformacoes_v4";
+function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{};}catch(e){return{};}}
+function saveState(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}
+let state=loadState();
+state.objetivosTA=state.objetivosTA||{};
+state.atividadesTA=state.atividadesTA||{};
+state.marcosCOP=state.marcosCOP||{};
+state.resultadosCOP=state.resultadosCOP||{};
 
-const STORAGE_KEY = "transformacoes_v3";
-function loadState(){
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e){ return {}; }
-}
-function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
-let state = loadState();
-state.objetivosTA = state.objetivosTA || {};
-state.atividadesTA = state.atividadesTA || {};
-state.marcosCOP = state.marcosCOP || {};
-state.resultadosCOP = state.resultadosCOP || {};
-
-let fonteAtual = "capes";
-let projAtual = "ta";
-
+let fonteAtual="capes";
+let projAtual="ta";
 const fmt = v => v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-/* ============================================================
-   NAV / TABS por projeto
-============================================================ */
-
-const tabsTA = [
-  {id:"ta-dashboard", label:"📊 Dashboard"},
-  {id:"ta-itens", label:"🛒 Itens de Compra"},
-  {id:"ta-capes", label:"🔵 CAPES"},
-  {id:"ta-fapemat", label:"🟢 FAPEMAT"},
-  {id:"ta-gantt", label:"📅 Cronograma / Gantt"},
-  {id:"ta-equipe", label:"👥 Equipe"},
-  {id:"ta-projeto", label:"📋 Projeto"},
-  {id:"ta-documentos", label:"📁 Documentos"},
+const tabsTA=[
+  {id:"ta-dashboard",label:"📊 Dashboard"},
+  {id:"ta-itens",label:"🛒 Itens de Compra"},
+  {id:"ta-capes",label:"🔵 CAPES"},
+  {id:"ta-fapemat",label:"🟢 FAPEMAT"},
+  {id:"ta-gantt",label:"📅 Cronograma / Gantt"},
+  {id:"ta-equipe",label:"👥 Equipe"},
+  {id:"ta-projeto",label:"📋 Projeto"},
+  {id:"ta-documentos",label:"📁 Documentos"},
 ];
-const tabsCOP = [
-  {id:"cop-dashboard", label:"📊 Dashboard"},
-  {id:"cop-itens", label:"🛒 Itens de Custo"},
-  {id:"cop-gantt", label:"📅 Cronograma"},
-  {id:"cop-projeto", label:"📋 Projeto"},
-  {id:"cop-documentos", label:"📁 Documentos"},
+const tabsCOP=[
+  {id:"cop-dashboard",label:"📊 Dashboard"},
+  {id:"cop-itens",label:"🛒 Itens de Custo (MP)"},
+  {id:"cop-gantt",label:"📅 Cronograma"},
+  {id:"cop-projeto",label:"📋 Projeto"},
+  {id:"cop-documentos",label:"📁 Documentos"},
 ];
 
 function renderTabs(){
-  const nav = document.getElementById("navTabs");
-  const tabs = projAtual === "ta" ? tabsTA : tabsCOP;
-  nav.innerHTML = tabs.map((t,idx) => `<button class="tab-btn ${idx===0?'active':''}" data-tab="${t.id}">${t.label}</button>`).join("");
+  const nav=document.getElementById("navTabs");
+  const tabs=projAtual==="ta"?tabsTA:tabsCOP;
+  nav.innerHTML=tabs.map((t,idx)=>`<button class="tab-btn ${idx===0?'active':''}" data-tab="${t.id}">${t.label}</button>`).join("");
   document.querySelectorAll("#navTabs .tab-btn").forEach(b=>{
-    b.addEventListener("click", ()=>{
+    b.addEventListener("click",()=>{
       document.querySelectorAll("#navTabs .tab-btn").forEach(x=>x.classList.remove("active"));
       document.querySelectorAll(`.project-content[data-proj="${projAtual}"] .section`).forEach(x=>x.classList.remove("active"));
       b.classList.add("active");
@@ -982,458 +992,336 @@ function renderTabs(){
   });
 }
 
-document.querySelectorAll(".proj-pill").forEach(b=>{
-  b.addEventListener("click", ()=>{
-    document.querySelectorAll(".proj-pill").forEach(x=>x.classList.remove("active"));
+document.querySelectorAll(".proj-card").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".proj-card").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
-    projAtual = b.dataset.proj;
+    projAtual=b.dataset.proj;
     document.querySelectorAll(".project-content").forEach(pc=>{
-      pc.style.display = pc.dataset.proj === projAtual ? "" : "none";
+      pc.style.display=pc.dataset.proj===projAtual?"":"none";
     });
     renderTabs();
-    // Primeiro tab ativo
-    const first = projAtual === "ta" ? "ta-dashboard" : "cop-dashboard";
+    const first=projAtual==="ta"?"ta-dashboard":"cop-dashboard";
     document.querySelectorAll(`.project-content[data-proj="${projAtual}"] .section`).forEach(x=>x.classList.remove("active"));
     document.getElementById(first).classList.add("active");
+    setTimeout(()=>{renderGanttTA();renderGanttCOP();},100);
   });
 });
 
-/* ============================================================
-   TABELA DE ITENS TA
-============================================================ */
-
 function getItens(){
-  if(fonteAtual === "capes")   return itensCapes;
-  if(fonteAtual === "fapemat") return itensFapemat;
-  return [...itensCapes, ...itensFapemat];
+  if(fonteAtual==="capes")return itensCapes;
+  if(fonteAtual==="fapemat")return itensFapemat;
+  return [...itensCapes,...itensFapemat];
 }
 
 function atualizarFiltroCategoria(){
-  const sel = document.getElementById("filtroCat");
-  sel.innerHTML = '<option value="">Todas</option>' +
-    catsPorFonte[fonteAtual].map(c => `<option value="${c}">${catLabels[c]}</option>`).join("");
+  const sel=document.getElementById("filtroCat");
+  sel.innerHTML='<option value="">Todas</option>'+catsPorFonte[fonteAtual].map(c=>`<option value="${c}">${catLabels[c]}</option>`).join("");
 }
 
 function atualizarCabecalho(){
-  const thead = document.getElementById("theadItens");
-  if(fonteAtual === "todos"){
-    thead.innerHTML = `<th>#</th><th>Descrição</th><th>Fonte</th><th>Natureza</th><th>Categoria</th><th style="text-align:right">Qtd</th><th style="text-align:right">Unit. (R$)</th><th style="text-align:right">Total (R$)</th>`;
+  const thead=document.getElementById("theadItens");
+  if(fonteAtual==="todos"){
+    thead.innerHTML=`<th>#</th><th>Descrição</th><th>Fonte</th><th>Natureza</th><th>Categoria</th><th style="text-align:right">Qtd</th><th style="text-align:right">Unit. (R$)</th><th style="text-align:right">Total (R$)</th>`;
   } else {
-    thead.innerHTML = `<th>#</th><th>Descrição</th><th>Natureza</th><th>Categoria</th><th style="text-align:right">Qtd</th><th style="text-align:right">Unit. (R$)</th><th style="text-align:right">Total (R$)</th>`;
+    thead.innerHTML=`<th>#</th><th>Descrição</th><th>Natureza</th><th>Categoria</th><th style="text-align:right">Qtd</th><th style="text-align:right">Unit. (R$)</th><th style="text-align:right">Total (R$)</th>`;
   }
 }
 
 function renderTabela(){
-  const busca = document.getElementById("buscaItem").value.toLowerCase();
-  const cat = document.getElementById("filtroCat").value;
-  const nat = document.getElementById("filtroNat").value;
-  const tbody = document.getElementById("corpoItens");
-  const itens = getItens();
-  tbody.innerHTML = "";
-  let total = 0, count = 0;
-  const temFonte = fonteAtual === "todos";
-  itens.forEach((it, idx)=>{
-    const tot = it.q * it.u;
-    const matchBusca = !busca || it.d.toLowerCase().includes(busca) || String(idx+1).includes(busca);
-    const matchCat = !cat || it.c === cat;
-    const matchNat = !nat || it.nat === nat;
-    if(!matchBusca || !matchCat || !matchNat) return;
-    total += tot; count++;
-    const tr = document.createElement("tr");
-    const fonteCell = temFonte ? `<td class="fonte"><span class="fonte-${it.fonte}">${it.fonte.toUpperCase()}</span></td>` : "";
-    tr.innerHTML = `<td>${idx+1}</td><td>${it.d}</td>${fonteCell}<td class="natureza"><span class="nat-${it.nat}">${it.nat === "custeio" ? "Custeio" : "Permanente"}</span></td><td class="cat"><span class="cat-${it.c}">${catLabels[it.c]}</span></td><td class="num">${fmt(it.q)}</td><td class="num">${fmt(it.u)}</td><td class="num"><strong>${fmt(tot)}</strong></td>`;
+  const busca=document.getElementById("buscaItem").value.toLowerCase();
+  const cat=document.getElementById("filtroCat").value;
+  const nat=document.getElementById("filtroNat").value;
+  const tbody=document.getElementById("corpoItens");
+  const itens=getItens();
+  tbody.innerHTML="";
+  let total=0,count=0;
+  const temFonte=fonteAtual==="todos";
+  itens.forEach((it,idx)=>{
+    const tot=it.q*it.u;
+    const mB=!busca||it.d.toLowerCase().includes(busca)||String(idx+1).includes(busca);
+    const mC=!cat||it.c===cat;
+    const mN=!nat||it.nat===nat;
+    if(!mB||!mC||!mN)return;
+    total+=tot;count++;
+    const tr=document.createElement("tr");
+    const fc=temFonte?`<td class="fonte"><span class="fonte-${it.fonte}">${it.fonte.toUpperCase()}</span></td>`:"";
+    tr.innerHTML=`<td>${idx+1}</td><td>${it.d}</td>${fc}<td class="natureza"><span class="nat-${it.nat}">${it.nat==="custeio"?"Custeio":"Permanente"}</span></td><td class="cat"><span class="cat-${it.c}">${catLabels[it.c]}</span></td><td class="num">${fmt(it.q)}</td><td class="num">${fmt(it.u)}</td><td class="num"><strong>${fmt(tot)}</strong></td>`;
     tbody.appendChild(tr);
   });
-  const colspan = temFonte ? 7 : 6;
-  const totalLbl = document.getElementById("totalLabel");
-  totalLbl.setAttribute("colspan", colspan);
-  const fonteNome = fonteAtual === "capes" ? "CAPES" : (fonteAtual === "fapemat" ? "FAPEMAT" : "CAPES + FAPEMAT");
-  const corTotal = fonteAtual === "capes" ? "var(--capes)" : (fonteAtual === "fapemat" ? "var(--fapemat)" : "var(--accent)");
-  totalLbl.innerHTML = `TOTAL ${fonteNome}:`;
-  document.getElementById("totalValor").innerHTML = `<span style="color:${corTotal}">R$ ${fmt(total)}</span>`;
-  document.getElementById("contadorItens").innerHTML = `<strong>${count}</strong> itens`;
-  document.getElementById("somaItens").innerHTML = `Subtotal: <strong>R$ ${fmt(total)}</strong>`;
+  const cs=temFonte?7:6;
+  const tL=document.getElementById("totalLabel");
+  tL.setAttribute("colspan",cs);
+  const fn=fonteAtual==="capes"?"CAPES":(fonteAtual==="fapemat"?"FAPEMAT":"CAPES + FAPEMAT");
+  const cor=fonteAtual==="capes"?"var(--capes)":(fonteAtual==="fapemat"?"var(--fapemat)":"var(--accent)");
+  tL.innerHTML=`TOTAL ${fn}:`;
+  document.getElementById("totalValor").innerHTML=`<span style="color:${cor}">R$ ${fmt(total)}</span>`;
+  document.getElementById("contadorItens").innerHTML=`<strong>${count}</strong> itens`;
+  document.getElementById("somaItens").innerHTML=`Subtotal: <strong>R$ ${fmt(total)}</strong>`;
 }
 
 function atualizarAlerta(){
-  const el = document.getElementById("alertaFonte");
-  if(fonteAtual === "capes"){
-    el.className = "alert capes";
-    el.innerHTML = `<span class="alert-icon">🔵</span><div><strong>CAPES/PROEXT-PG:</strong> 6 rubricas totalizando R$ 239.700,00. Rubricas fechadas. Toda NF identificada como CAPES. <u>Sem material permanente</u>.</div>`;
-  } else if(fonteAtual === "fapemat"){
-    el.className = "alert fapemat";
-    el.innerHTML = `<span class="alert-icon">🟢</span><div><strong>FAPEMAT (Contrapartida):</strong> 53 itens totalizando R$ 239.700,00 · Custeio (R$ 218.500) + Permanente (R$ 21.200). Processo FAPEMAT-PRO.0002209/2025.</div>`;
+  const el=document.getElementById("alertaFonte");
+  if(fonteAtual==="capes"){
+    el.className="alert capes";
+    el.innerHTML=`<span class="alert-icon">🔵</span><div><strong>CAPES/PROEXT-PG:</strong> 6 rubricas totalizando R$ 239.700,00. Rubricas fechadas. Toda NF identificada como CAPES. <u>Sem material permanente</u>.</div>`;
+  } else if(fonteAtual==="fapemat"){
+    el.className="alert fapemat";
+    el.innerHTML=`<span class="alert-icon">🟢</span><div><strong>FAPEMAT (Contrapartida):</strong> 53 itens totalizando R$ 239.700,00 · Custeio (R$ 218.500) + Permanente (R$ 21.200). Processo FAPEMAT-PRO.0002209/2025.</div>`;
   } else {
-    el.className = "alert";
-    el.innerHTML = `<span class="alert-icon">⚠️</span><div><strong>Visão unificada (apenas visualização):</strong> Total R$ 479.400,00 = CAPES R$ 239.700 + FAPEMAT R$ 239.700. Na execução e prestação de contas, as fontes são <strong>sempre separadas</strong>.</div>`;
+    el.className="alert";
+    el.innerHTML=`<span class="alert-icon">⚠️</span><div><strong>Visão unificada (apenas visualização):</strong> Total R$ 479.400,00 = CAPES R$ 239.700 + FAPEMAT R$ 239.700. Na execução e prestação de contas, as fontes são <strong>sempre separadas</strong>.</div>`;
   }
 }
 
 function renderBars(){
-  // FAPEMAT por rubrica (no dashboard TA)
-  const rubricasFapemat = [
-    {nome:"Material de Consumo", v:91063.50},
-    {nome:"Outros Serviços de Terceiros", v:69000},
-    {nome:"Diárias", v:51936.50},
-    {nome:"Equip. e Material Permanente", v:21200},
-    {nome:"Passagens", v:6500},
-  ];
-  const totFpmt = rubricasFapemat.reduce((a,b)=>a+b.v,0);
-  document.getElementById("fapematBars").innerHTML = rubricasFapemat.map(r=>{
-    const pct = (r.v/totFpmt*100);
+  const rF=[{nome:"Material de Consumo",v:91063.50},{nome:"Outros Serviços de Terceiros",v:69000},{nome:"Diárias",v:51936.50},{nome:"Equip. e Material Permanente",v:21200},{nome:"Passagens",v:6500}];
+  const tF=rF.reduce((a,b)=>a+b.v,0);
+  document.getElementById("fapematBars").innerHTML=rF.map(r=>{
+    const pct=(r.v/tF*100);
     return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${r.nome}</span><span style="color:var(--muted)">R$ ${fmt(r.v)} · ${pct.toFixed(1)}%</span></div><div class="bar fapemat"><span style="width:${pct}%"></span></div></div>`;
   }).join("");
 
-  // CAPES por rubrica
-  const el2 = document.getElementById("capesBars");
-  const totCapes = itensCapes.reduce((a,b)=>a+b.q*b.u,0);
-  el2.innerHTML = itensCapes.filter(it => it.q*it.u > 0).sort((a,b)=>(b.q*b.u)-(a.q*a.u)).map(it=>{
-    const v = it.q*it.u;
-    const pct = (v/totCapes*100);
+  const el2=document.getElementById("capesBars");
+  const tC=itensCapes.reduce((a,b)=>a+b.q*b.u,0);
+  el2.innerHTML=itensCapes.filter(it=>it.q*it.u>0).sort((a,b)=>(b.q*b.u)-(a.q*a.u)).map(it=>{
+    const v=it.q*it.u;const pct=(v/tC*100);
     return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${it.d}</span><span style="color:var(--muted)">R$ ${fmt(v)} · ${pct.toFixed(1)}%</span></div><div class="bar capes"><span style="width:${pct}%"></span></div></div>`;
   }).join("");
 
-  // COP por rubrica
-  const elCOP = document.getElementById("copBars");
-  const totCOP = itensCOP.reduce((a,b)=>a+b.u,0);
-  elCOP.innerHTML = itensCOP.sort((a,b)=>b.u-a.u).map(it=>{
-    const pct = (it.u/totCOP*100);
+  const elC=document.getElementById("copBars");
+  const tCOP=itensCOP.reduce((a,b)=>a+b.u,0);
+  elC.innerHTML=itensCOP.sort((a,b)=>b.u-a.u).map(it=>{
+    const pct=(it.u/tCOP*100);
     return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${it.d}</span><span style="color:var(--muted)">R$ ${fmt(it.u)} · ${pct.toFixed(1)}%</span></div><div class="bar mpe"><span style="width:${pct}%"></span></div></div>`;
   }).join("");
 }
 
-/* ============================================================
-   GANTT TA — 24 meses
-============================================================ */
-
 function renderGanttTA(){
-  const g = document.getElementById("ganttTA");
-  const inicio = new Date(2025, 10, 1); // nov/2025
-  const meses = [];
-  for(let i=0; i<24; i++){
-    const d = new Date(inicio.getFullYear(), inicio.getMonth()+i, 1);
-    meses.push({ano:d.getFullYear(), mes:d.getMonth()+1, label:d.toLocaleDateString("pt-BR",{month:"short",year:"2-digit"}), date:d});
-  }
-
-  // Mês atual
-  const hoje = new Date();
-  const mesesDecorridos = Math.floor((hoje - inicio) / (1000*60*60*24*30.44));
-  const mesAtualIdx = Math.max(0, Math.min(23, mesesDecorridos));
-  document.getElementById("taMonthNow").textContent = Math.max(1, mesAtualIdx+1);
-
-  const cols = `220px repeat(24, minmax(32px, 1fr))`;
-
-  // Header
-  let html = `<div class="gantt-header" style="grid-template-columns:${cols}">`;
-  html += `<div class="g-label">Atividade</div>`;
-  meses.forEach((m, idx) => {
-    const hl = idx === mesAtualIdx ? "highlight" : "";
-    html += `<div class="g-month ${hl}">${m.label}</div>`;
-  });
-  html += `</div>`;
-
-  // Linhas
-  atividadesTA.forEach(a => {
-    const done = state.atividadesTA[a.id];
-    html += `<div class="gantt-row" style="grid-template-columns:${cols}">`;
-    html += `<div class="g-label" title="${a.nome}"><strong>${a.id}</strong> · ${a.nome.substring(0,40)}${a.nome.length>40?"…":""}</div>`;
-    for(let i=0; i<24; i++){
-      const noRange = (i+1) >= a.start && (i+1) < (a.start + a.dur);
-      const cls = noRange ? "g-cell in-range" : "g-cell";
-      let bar = "";
-      if(i+1 === a.start){
-        const span = a.dur;
-        bar = `<div class="gantt-bar fapemat ${done?'done':''}" style="left:2px;right:2px;width:calc(${span * 100}% - 4px)"><span style="overflow:hidden;text-overflow:ellipsis">${a.id} · ${a.chs}h/sem</span></div>`;
+  const g=document.getElementById("ganttTA");
+  if(!g)return;
+  const inicio=new Date(2025,10,1);
+  const meses=[];
+  for(let i=0;i<24;i++){const d=new Date(inicio.getFullYear(),inicio.getMonth()+i,1);meses.push({label:d.toLocaleDateString("pt-BR",{month:"short",year:"2-digit"}),date:d});}
+  const hoje=new Date();
+  const md=Math.floor((hoje-inicio)/(1000*60*60*24*30.44));
+  const mAtual=Math.max(0,Math.min(23,md));
+  document.getElementById("taMonthNow").textContent=Math.max(1,mAtual+1);
+  const cols=`220px repeat(24, minmax(32px, 1fr))`;
+  let html=`<div class="gantt-header" style="grid-template-columns:${cols}"><div class="g-label">Atividade</div>`;
+  meses.forEach((m,idx)=>{html+=`<div class="g-month ${idx===mAtual?'highlight':''}">${m.label}</div>`;});
+  html+=`</div>`;
+  atividadesTA.forEach(a=>{
+    const done=state.atividadesTA[a.id];
+    html+=`<div class="gantt-row" style="grid-template-columns:${cols}"><div class="g-label" title="${a.nome}"><strong>${a.id}</strong> · ${a.nome.substring(0,40)}${a.nome.length>40?"…":""}</div>`;
+    for(let i=0;i<24;i++){
+      const noR=(i+1)>=a.start&&(i+1)<(a.start+a.dur);
+      const cls=noR?"g-cell in-range":"g-cell";
+      let bar="";
+      if(i+1===a.start){
+        bar=`<div class="gantt-bar fapemat ${done?'done':''}" style="left:2px;right:2px;width:calc(${a.dur*100}% - 4px)"><span>${a.id} · ${a.chs}h/sem</span></div>`;
       }
-      html += `<div class="${cls}">${bar}</div>`;
+      html+=`<div class="${cls}">${bar}</div>`;
     }
-    html += `</div>`;
+    html+=`</div>`;
   });
-
-  g.innerHTML = html;
-
-  // Linha do hoje
-  setTimeout(() => {
-    const header = g.querySelector(".gantt-header");
-    if(!header || mesAtualIdx < 0) return;
-    const monthEl = header.children[mesAtualIdx + 1];
-    if(!monthEl) return;
-    const rect = monthEl.getBoundingClientRect();
-    const gRect = g.getBoundingClientRect();
-    const left = rect.left - gRect.left + rect.width/2;
-    const line = document.createElement("div");
-    line.className = "gantt-today-line";
-    line.style.left = left + "px";
-    const lbl = document.createElement("div");
-    lbl.className = "gantt-today-label";
-    lbl.style.left = left + "px";
-    lbl.textContent = "HOJE";
-    line.appendChild(lbl);
-    g.appendChild(line);
-  }, 50);
+  g.innerHTML=html;
+  setTimeout(()=>{
+    const h=g.querySelector(".gantt-header");
+    if(!h||mAtual<0)return;
+    const mE=h.children[mAtual+1];
+    if(!mE)return;
+    const r=mE.getBoundingClientRect();
+    const gR=g.getBoundingClientRect();
+    const left=r.left-gR.left+r.width/2;
+    const line=document.createElement("div");
+    line.className="gantt-today-line";line.style.left=left+"px";
+    const lbl=document.createElement("div");
+    lbl.className="gantt-today-label";lbl.style.left=left+"px";lbl.textContent="HOJE";
+    line.appendChild(lbl);g.appendChild(line);
+  },50);
 }
-
-/* ============================================================
-   GANTT COP
-============================================================ */
 
 function renderGanttCOP(){
-  const g = document.getElementById("ganttCOP");
-  // 6 meses: ago/2025 a jan/2026
-  const inicio = new Date(2025, 7, 1);
-  const semanas = [];
-  for(let i=0; i<24; i++){
-    const d = new Date(inicio);
-    d.setDate(d.getDate() + i*7);
-    semanas.push({label:`S${i+1}`, date:new Date(d)});
-  }
-  const hoje = new Date();
-  const diasPassados = (hoje - inicio)/(1000*60*60*24);
-  const semAtual = Math.max(0, Math.min(23, Math.floor(diasPassados/7)));
-
-  // Calcula posição percentual para cada etapa
-  const totalDias = 24*7;
-  function pctRange(startStr, endStr){
-    const s = new Date(startStr);
-    const e = new Date(endStr);
-    const sD = (s - inicio)/(1000*60*60*24);
-    const eD = (e - inicio)/(1000*60*60*24);
-    return { left: (sD/totalDias)*100, width: ((eD-sD+1)/totalDias)*100 };
-  }
-
-  const cols = `220px repeat(24, minmax(26px, 1fr))`;
-  let html = `<div class="gantt-header" style="grid-template-columns:${cols}">`;
-  html += `<div class="g-label">Etapa</div>`;
-  semanas.forEach((s, idx) => {
-    // mostra label do mês na 1ª semana do mês
-    const mesInicio = s.date.getDate() <= 7;
-    const hl = idx === semAtual ? "highlight" : "";
-    const lbl = mesInicio ? s.date.toLocaleDateString("pt-BR",{month:"short"}) : "";
-    html += `<div class="g-month ${hl}">${lbl}</div>`;
+  const g=document.getElementById("ganttCOP");
+  if(!g)return;
+  const inicio=new Date(2025,7,1);
+  const semanas=[];
+  for(let i=0;i<24;i++){const d=new Date(inicio);d.setDate(d.getDate()+i*7);semanas.push({label:`S${i+1}`,date:new Date(d)});}
+  const hoje=new Date();
+  const dp=(hoje-inicio)/(1000*60*60*24);
+  const sA=Math.max(0,Math.min(23,Math.floor(dp/7)));
+  const totDias=24*7;
+  function pR(sS,eS){const s=new Date(sS);const e=new Date(eS);const sD=(s-inicio)/(1000*60*60*24);const eD=(e-inicio)/(1000*60*60*24);return{left:(sD/totDias)*100,width:((eD-sD+1)/totDias)*100};}
+  const cols=`220px repeat(24, minmax(26px, 1fr))`;
+  let html=`<div class="gantt-header" style="grid-template-columns:${cols}"><div class="g-label">Etapa</div>`;
+  semanas.forEach((s,idx)=>{
+    const mI=s.date.getDate()<=7;
+    const hl=idx===sA?"highlight":"";
+    const lbl=mI?s.date.toLocaleDateString("pt-BR",{month:"short"}):"";
+    html+=`<div class="g-month ${hl}">${lbl}</div>`;
   });
-  html += `</div>`;
-
-  // Etapas como barras posicionadas via %
-  etapasCOP.forEach(e => {
-    const r = pctRange(e.start, e.end);
-    html += `<div class="gantt-row" style="grid-template-columns:220px 1fr;align-items:center">`;
-    html += `<div class="g-label" title="${e.nome}"><strong>${e.id}</strong> · ${e.nome}</div>`;
-    html += `<div style="position:relative;height:28px;background:var(--panel-3);border-radius:3px"><div class="gantt-bar mpe" style="left:${r.left}%;width:${r.width}%;right:auto"><span>${e.nome}</span></div></div>`;
-    html += `</div>`;
+  html+=`</div>`;
+  etapasCOP.forEach(e=>{
+    const r=pR(e.start,e.end);
+    html+=`<div class="gantt-row" style="grid-template-columns:220px 1fr;align-items:center"><div class="g-label" title="${e.nome}"><strong>${e.id}</strong> · ${e.nome}</div><div style="position:relative;height:28px;background:var(--panel-3);border-radius:3px"><div class="gantt-bar mpe" style="left:${r.left}%;width:${r.width}%;right:auto"><span>${e.nome}</span></div></div></div>`;
   });
-
-  g.innerHTML = html;
-
-  // Linha de hoje
-  setTimeout(() => {
-    if(semAtual < 0 || semAtual > 23) return;
-    const header = g.querySelector(".gantt-header");
-    if(!header) return;
-    const weekEl = header.children[semAtual + 1];
-    if(!weekEl) return;
-    const rect = weekEl.getBoundingClientRect();
-    const gRect = g.getBoundingClientRect();
-    const left = rect.left - gRect.left + rect.width/2;
-    const line = document.createElement("div");
-    line.className = "gantt-today-line";
-    line.style.left = left + "px";
-    const lbl = document.createElement("div");
-    lbl.className = "gantt-today-label";
-    lbl.style.left = left + "px";
-    lbl.textContent = "HOJE";
-    line.appendChild(lbl);
-    g.appendChild(line);
-  }, 50);
+  g.innerHTML=html;
+  setTimeout(()=>{
+    if(sA<0||sA>23)return;
+    const h=g.querySelector(".gantt-header");
+    if(!h)return;
+    const wE=h.children[sA+1];
+    if(!wE)return;
+    const r=wE.getBoundingClientRect();
+    const gR=g.getBoundingClientRect();
+    const left=r.left-gR.left+r.width/2;
+    const line=document.createElement("div");
+    line.className="gantt-today-line";line.style.left=left+"px";
+    const lbl=document.createElement("div");
+    lbl.className="gantt-today-label";lbl.style.left=left+"px";lbl.textContent="HOJE";
+    line.appendChild(lbl);g.appendChild(line);
+  },50);
 }
 
-/* ============================================================
-   CHECKLISTS
-============================================================ */
-
 function renderChecklistTA(){
-  const el = document.getElementById("checklistTA");
-  el.innerHTML = atividadesTA.map(a=>{
-    const done = state.atividadesTA[a.id] || false;
-    return `<div class="check-item ${done?'done':''}" data-key="${a.id}">
-      <input type="checkbox" ${done?'checked':''}>
-      <div>
-        <div class="check-text">${a.id} · ${a.nome}</div>
-        <div class="check-meta">Início: mês ${a.start} · Duração: ${a.dur} meses · CH: ${a.chs}h/sem · Responsável: ${a.resp}</div>
-      </div>
-    </div>`;
+  const el=document.getElementById("checklistTA");
+  el.innerHTML=atividadesTA.map(a=>{
+    const done=state.atividadesTA[a.id]||false;
+    return `<div class="check-item ${done?'done':''}" data-key="${a.id}"><input type="checkbox" ${done?'checked':''}><div><div class="check-text">${a.id} · ${a.nome}</div><div class="check-meta">Início: mês ${a.start} · Duração: ${a.dur} meses · CH: ${a.chs}h/sem · Responsável: ${a.resp}</div></div></div>`;
   }).join("");
   el.querySelectorAll(".check-item").forEach(ci=>{
-    ci.addEventListener("click", (e)=>{
-      const key = ci.dataset.key;
-      state.atividadesTA[key] = !state.atividadesTA[key];
+    ci.addEventListener("click",()=>{
+      const k=ci.dataset.key;
+      state.atividadesTA[k]=!state.atividadesTA[k];
       saveState(state);
       ci.classList.toggle("done");
-      ci.querySelector("input").checked = state.atividadesTA[key];
-      atualizarProgressoTA();
-      renderGanttTA();
+      ci.querySelector("input").checked=state.atividadesTA[k];
+      atualizarProgressoTA();renderGanttTA();
     });
   });
 }
 
 function renderObjetivosTA(){
-  const el = document.getElementById("objetivosTA");
-  el.innerHTML = objetivosTA.map((o, i)=>{
-    const done = state.objetivosTA[i] || false;
-    return `<div class="check-item ${done?'done':''}" data-idx="${i}">
-      <input type="checkbox" ${done?'checked':''}>
-      <div class="check-text">${i+1}. ${o}</div>
-    </div>`;
+  const el=document.getElementById("objetivosTA");
+  el.innerHTML=objetivosTA.map((o,i)=>{
+    const done=state.objetivosTA[i]||false;
+    return `<div class="check-item ${done?'done':''}" data-idx="${i}"><input type="checkbox" ${done?'checked':''}><div class="check-text">${i+1}. ${o}</div></div>`;
   }).join("");
   el.querySelectorAll(".check-item").forEach(ci=>{
-    ci.addEventListener("click", ()=>{
-      const i = ci.dataset.idx;
-      state.objetivosTA[i] = !state.objetivosTA[i];
+    ci.addEventListener("click",()=>{
+      const i=ci.dataset.idx;
+      state.objetivosTA[i]=!state.objetivosTA[i];
       saveState(state);
       ci.classList.toggle("done");
-      ci.querySelector("input").checked = state.objetivosTA[i];
+      ci.querySelector("input").checked=state.objetivosTA[i];
     });
   });
 }
 
 function renderChecklistCOP(){
-  const el = document.getElementById("checklistCOP");
-  let html = "";
-  marcosCOP.forEach((grupo, gi)=>{
-    html += `<h4 style="margin:14px 0 4px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px">${grupo.g}</h4>`;
-    grupo.items.forEach((item, ii)=>{
-      const key = `${gi}-${ii}`;
-      const done = state.marcosCOP[key] || false;
-      html += `<div class="check-item ${done?'done':''}" data-key="${key}">
-        <input type="checkbox" ${done?'checked':''}>
-        <div class="check-text">${item}</div>
-      </div>`;
+  const el=document.getElementById("checklistCOP");
+  let html="";
+  marcosCOP.forEach((grupo,gi)=>{
+    html+=`<h4 style="margin:14px 0 4px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px">${grupo.g}</h4>`;
+    grupo.items.forEach((item,ii)=>{
+      const key=`${gi}-${ii}`;
+      const done=state.marcosCOP[key]||false;
+      html+=`<div class="check-item ${done?'done':''}" data-key="${key}"><input type="checkbox" ${done?'checked':''}><div class="check-text">${item}</div></div>`;
     });
   });
-  el.innerHTML = html;
+  el.innerHTML=html;
   el.querySelectorAll(".check-item").forEach(ci=>{
-    ci.addEventListener("click", ()=>{
-      const key = ci.dataset.key;
-      state.marcosCOP[key] = !state.marcosCOP[key];
+    ci.addEventListener("click",()=>{
+      const k=ci.dataset.key;
+      state.marcosCOP[k]=!state.marcosCOP[k];
       saveState(state);
       ci.classList.toggle("done");
-      ci.querySelector("input").checked = state.marcosCOP[key];
+      ci.querySelector("input").checked=state.marcosCOP[k];
       atualizarProgressoCOP();
     });
   });
 }
 
 function renderResultadosCOP(){
-  const el = document.getElementById("resultadosCOP");
-  el.innerHTML = resultadosCOP.map((r, i)=>{
-    const done = state.resultadosCOP[i] || false;
-    return `<div class="check-item ${done?'done':''}" data-idx="${i}">
-      <input type="checkbox" ${done?'checked':''}>
-      <div class="check-text">${i+1}. ${r}</div>
-    </div>`;
+  const el=document.getElementById("resultadosCOP");
+  el.innerHTML=resultadosCOP.map((r,i)=>{
+    const done=state.resultadosCOP[i]||false;
+    return `<div class="check-item ${done?'done':''}" data-idx="${i}"><input type="checkbox" ${done?'checked':''}><div class="check-text">${i+1}. ${r}</div></div>`;
   }).join("");
   el.querySelectorAll(".check-item").forEach(ci=>{
-    ci.addEventListener("click", ()=>{
-      const i = ci.dataset.idx;
-      state.resultadosCOP[i] = !state.resultadosCOP[i];
+    ci.addEventListener("click",()=>{
+      const i=ci.dataset.idx;
+      state.resultadosCOP[i]=!state.resultadosCOP[i];
       saveState(state);
       ci.classList.toggle("done");
-      ci.querySelector("input").checked = state.resultadosCOP[i];
+      ci.querySelector("input").checked=state.resultadosCOP[i];
     });
   });
 }
 
-/* ============================================================
-   PROGRESSO (anéis)
-============================================================ */
-
 function atualizarProgressoTA(){
-  const total = atividadesTA.length;
-  const feitos = atividadesTA.filter(a => state.atividadesTA[a.id]).length;
-  const pct = Math.round((feitos/total)*100);
-  const ring = document.getElementById("taProgressRing");
-  const circ = 2 * Math.PI * 25;
-  ring.setAttribute("stroke-dasharray", circ);
-  ring.setAttribute("stroke-dashoffset", circ * (1 - pct/100));
-  document.getElementById("taProgressPct").textContent = pct + "%";
-  document.getElementById("taProgressLabel").textContent = `${feitos} de ${total} atividades`;
+  const tot=atividadesTA.length;
+  const f=atividadesTA.filter(a=>state.atividadesTA[a.id]).length;
+  const pct=Math.round((f/tot)*100);
+  const ring=document.getElementById("taProgressRing");
+  const circ=2*Math.PI*25;
+  ring.setAttribute("stroke-dasharray",circ);
+  ring.setAttribute("stroke-dashoffset",circ*(1-pct/100));
+  document.getElementById("taProgressPct").textContent=pct+"%";
+  document.getElementById("taProgressLabel").textContent=`${f} de ${tot} atividades`;
 }
 
 function atualizarProgressoCOP(){
-  const total = marcosCOP.reduce((a,g)=>a+g.items.length, 0);
-  const feitos = Object.values(state.marcosCOP).filter(v=>v).length;
-  const pct = total > 0 ? Math.round((feitos/total)*100) : 0;
-  const ring = document.getElementById("copProgressRing");
-  const circ = 2 * Math.PI * 25;
-  ring.setAttribute("stroke-dasharray", circ);
-  ring.setAttribute("stroke-dashoffset", circ * (1 - pct/100));
-  document.getElementById("copProgressPct").textContent = pct + "%";
-  const etapasFeitas = marcosCOP.filter((g,gi) => g.items.every((_,ii) => state.marcosCOP[`${gi}-${ii}`])).length;
-  document.getElementById("copProgressLabel").textContent = `${etapasFeitas} de ${marcosCOP.length} etapas concluídas · ${feitos}/${total} itens`;
+  const tot=marcosCOP.reduce((a,g)=>a+g.items.length,0);
+  const f=Object.values(state.marcosCOP).filter(v=>v).length;
+  const pct=tot>0?Math.round((f/tot)*100):0;
+  const ring=document.getElementById("copProgressRing");
+  const circ=2*Math.PI*25;
+  ring.setAttribute("stroke-dasharray",circ);
+  ring.setAttribute("stroke-dashoffset",circ*(1-pct/100));
+  document.getElementById("copProgressPct").textContent=pct+"%";
+  const eF=marcosCOP.filter((g,gi)=>g.items.every((_,ii)=>state.marcosCOP[`${gi}-${ii}`])).length;
+  document.getElementById("copProgressLabel").textContent=`${eF} de ${marcosCOP.length} etapas · ${f}/${tot} itens`;
 }
 
-/* ============================================================
-   EVENTOS FONTES / FILTROS
-============================================================ */
-
 document.querySelectorAll(".source-btn").forEach(b=>{
-  b.addEventListener("click", ()=>{
+  b.addEventListener("click",()=>{
     document.querySelectorAll(".source-btn").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
-    fonteAtual = b.dataset.source;
-    atualizarFiltroCategoria();
-    atualizarCabecalho();
-    atualizarAlerta();
-    renderTabela();
+    fonteAtual=b.dataset.source;
+    atualizarFiltroCategoria();atualizarCabecalho();atualizarAlerta();renderTabela();
   });
 });
-
-document.getElementById("buscaItem").addEventListener("input", renderTabela);
-document.getElementById("filtroCat").addEventListener("change", renderTabela);
-document.getElementById("filtroNat").addEventListener("change", renderTabela);
+document.getElementById("buscaItem").addEventListener("input",renderTabela);
+document.getElementById("filtroCat").addEventListener("change",renderTabela);
+document.getElementById("filtroNat").addEventListener("change",renderTabela);
 
 document.querySelectorAll(".chip-filter").forEach(c=>{
-  c.addEventListener("click", ()=>{
+  c.addEventListener("click",()=>{
     document.querySelectorAll(".chip-filter").forEach(x=>x.classList.remove("active"));
     c.classList.add("active");
-    const f = c.dataset.docfilter;
+    const f=c.dataset.docfilter;
     document.querySelectorAll("#docGridTA .doc-card").forEach(card=>{
-      if(f === "todos") card.style.display = "";
-      else card.style.display = card.dataset.cat.includes(f) ? "" : "none";
+      if(f==="todos")card.style.display="";
+      else card.style.display=card.dataset.cat.includes(f)?"":"none";
     });
   });
 });
 
-/* ============================================================
-   INIT
-============================================================ */
-
-document.getElementById("anoNow").textContent = new Date().toLocaleDateString("pt-BR");
-document.getElementById("hoje").innerHTML = `Hoje: <strong>${new Date().toLocaleDateString("pt-BR")}</strong>`;
+document.getElementById("anoNow").textContent=new Date().toLocaleDateString("pt-BR");
+document.getElementById("hoje").innerHTML=`Hoje: <strong>${new Date().toLocaleDateString("pt-BR")}</strong>`;
 
 renderTabs();
-atualizarFiltroCategoria();
-atualizarCabecalho();
-atualizarAlerta();
-renderTabela();
-renderBars();
-renderGanttTA();
-renderGanttCOP();
-renderChecklistTA();
-renderObjetivosTA();
-renderChecklistCOP();
-renderResultadosCOP();
-atualizarProgressoTA();
-atualizarProgressoCOP();
+atualizarFiltroCategoria();atualizarCabecalho();atualizarAlerta();renderTabela();
+renderBars();renderGanttTA();renderGanttCOP();
+renderChecklistTA();renderObjetivosTA();renderChecklistCOP();renderResultadosCOP();
+atualizarProgressoTA();atualizarProgressoCOP();
 
-// Recalcular Gantt ao trocar aba (tamanhos mudam)
-document.addEventListener("click", (e)=>{
-  if(e.target.closest(".tab-btn") || e.target.closest(".proj-pill")){
-    setTimeout(()=>{ renderGanttTA(); renderGanttCOP(); }, 80);
-  }
+document.addEventListener("click",(e)=>{
+  if(e.target.closest(".tab-btn")){setTimeout(()=>{renderGanttTA();renderGanttCOP();},80);}
 });
-window.addEventListener("resize", ()=>{
-  renderGanttTA(); renderGanttCOP();
-});
+window.addEventListener("resize",()=>{renderGanttTA();renderGanttCOP();});
 </script>
 
 </body>
