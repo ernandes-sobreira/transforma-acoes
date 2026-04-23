@@ -1,902 +1,1440 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Transforma-Ações — Gestão do Projeto</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plataforma de Gestão — Projetos UNEMAT</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans','Segoe UI',sans-serif;background:#F4F6FE;min-height:100vh}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:#F3F4F6}
-::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:10px}
-button{cursor:pointer;font-family:inherit}
-button:hover{opacity:.88}
-input,select,textarea{font-family:inherit}
+:root{
+  --bg:#0b1220;--panel:#121a2b;--panel-2:#182238;--panel-3:#1d2840;--border:#253049;
+  --text:#e6edf7;--muted:#9fb0cc;--accent:#4ea1ff;--accent-2:#7ad27a;
+  --capes:#1f6feb;--capes-bg:rgba(31,111,235,.12);
+  --fapemat:#2ea043;--fapemat-bg:rgba(46,160,67,.12);
+  --mpe:#b957f2;--mpe-bg:rgba(185,87,242,.12);
+  --unemat:#d29922;--warn:#f0883e;--danger:#f85149;--ok:#56d364;
+  --chip:#223052;--shadow:0 6px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.5}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
 
-/* LOGIN */
-#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1E3A8A,#7C3AED,#DB2777);display:flex;align-items:center;justify-content:center;z-index:9999}
-#loginBox{background:#fff;border-radius:20px;padding:2.5rem;width:100%;max-width:380px;box-shadow:0 25px 60px rgba(0,0,0,.25)}
-#loginBox h1{font-family:'Sora',sans-serif;font-size:1.5rem;color:#111827;margin-bottom:.25rem}
-#loginBox p{color:#6B7280;font-size:.85rem;margin-bottom:1.75rem;line-height:1.5}
-#loginBox input{width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:.75rem 1rem;font-size:.95rem;outline:none;margin-bottom:.75rem;transition:border .2s}
-#loginBox input:focus{border-color:#7C3AED}
-#loginBtn{width:100%;background:linear-gradient(135deg,#1E3A8A,#7C3AED);color:#fff;border:none;border-radius:10px;padding:.85rem;font-size:.95rem;font-weight:700;margin-bottom:.6rem}
-#loginErr{color:#DC2626;font-size:.8rem;text-align:center;min-height:1.2rem}
+header{background:linear-gradient(135deg,#0f1a33 0%,#1a2650 60%,#0f1a33 100%);border-bottom:1px solid var(--border);padding:18px 28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#4ea1ff,#7ad27a);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#0b1220}
+.brand h1{margin:0;font-size:18px}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+.header-meta{display:flex;gap:8px;flex-wrap:wrap}
+.badge{background:var(--chip);border:1px solid var(--border);padding:5px 10px;border-radius:999px;font-size:11px;color:var(--muted)}
+.badge strong{color:var(--text)}
 
-/* LAYOUT */
-#app{display:none}
-header{background:linear-gradient(135deg,#1E3A8A 0%,#7C3AED 55%,#DB2777 100%);padding:1.5rem 2rem;color:#fff}
-.header-inner{max-width:1200px;margin:0 auto}
-.logos{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.2rem}
-.logo-divider{width:1px;height:36px;background:rgba(255,255,255,.3)}
-.logo-badge{font-size:.78rem;font-weight:800;letter-spacing:.04em;padding:.3rem .7rem;border-radius:8px;background:rgba(255,255,255,.2);color:#fff}
-.header-meta{text-align:right}
-.header-meta span{display:block;font-size:.72rem;opacity:.7;letter-spacing:.04em}
-h1.title{font-family:'Sora',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:800;letter-spacing:-.02em;line-height:1.2}
-.title-sub{margin:.35rem 0 0;opacity:.85;font-size:.88rem}
-.stat-cards{display:flex;gap:1.25rem;margin-top:1.25rem;flex-wrap:wrap}
-.stat-card{background:rgba(255,255,255,.12);border-radius:12px;padding:.75rem 1.1rem;backdrop-filter:blur(8px);min-width:130px}
-.stat-card .slabel{font-size:.7rem;opacity:.75;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem}
-.stat-card .sval{font-size:1.25rem;font-weight:800;font-family:'Sora',sans-serif}
-.stat-card .ssub{font-size:.7rem;opacity:.7;margin-top:.1rem}
+/* Seletor de projeto (topo) */
+.project-switcher{background:var(--panel);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;gap:10px;overflow-x:auto;align-items:center}
+.project-switcher .label{color:var(--muted);font-size:12px;margin-right:8px;white-space:nowrap}
+.proj-pill{background:var(--panel-2);border:2px solid var(--border);color:var(--text);padding:10px 16px;border-radius:10px;cursor:pointer;font-size:13px;white-space:nowrap;font-family:inherit;display:flex;align-items:center;gap:10px;transition:all .18s}
+.proj-pill:hover{border-color:var(--accent)}
+.proj-pill.active{border-color:var(--accent);background:rgba(78,161,255,.1)}
+.proj-pill.active[data-proj="ta"]{border-color:var(--accent)}
+.proj-pill.active[data-proj="cop"]{border-color:var(--mpe);background:var(--mpe-bg)}
+.proj-pill-dot{width:10px;height:10px;border-radius:50%;flex:none}
+.proj-ta-dot{background:linear-gradient(135deg,var(--capes),var(--fapemat))}
+.proj-cop-dot{background:var(--mpe)}
 
-nav{background:#fff;border-bottom:1px solid #E5E7EB;position:sticky;top:0;z-index:50;overflow-x:auto}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;white-space:nowrap}
-.tab-btn{background:none;border:none;padding:.9rem 1.1rem;font-size:.85rem;font-weight:500;color:#6B7280;border-bottom:2.5px solid transparent;transition:all .15s;font-family:inherit}
-.tab-btn.active{font-weight:700;color:#7C3AED;border-bottom-color:#7C3AED}
+nav.tabs{display:flex;gap:2px;padding:0 28px;background:var(--panel);border-bottom:1px solid var(--border);overflow-x:auto}
+nav.tabs button{background:none;border:none;color:var(--muted);padding:14px 16px;font-size:13px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-weight:500;font-family:inherit}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent);border-bottom-color:var(--accent)}
 
-main{max-width:1200px;margin:0 auto;padding:2rem}
+main{padding:24px;max-width:1500px;margin:0 auto}
+.section{display:none}
+.section.active{display:block}
 
-/* CARDS */
-.card{background:#fff;border-radius:14px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04)}
-.card-flush{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);overflow:hidden}
+h2.section-title{margin:0 0 8px;font-size:22px;display:flex;align-items:center;gap:10px}
+h2.section-title .dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.section-sub{color:var(--muted);margin:0 0 22px;font-size:13px}
 
-/* GRID */
-.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
-.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:1.25rem}
-.grid-team{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.grid{display:grid;gap:14px}
+.grid.cols-5{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.grid.cols-4{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
 
-/* BADGES */
-.badge{border-radius:100px;padding:.2rem .65rem;font-size:.68rem;font-weight:700;white-space:nowrap;display:inline-flex;align-items:center;gap:.25rem}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 10px;font-size:13px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kpi{font-size:26px;font-weight:700;margin:0;font-variant-numeric:tabular-nums}
+.kpi.small{font-size:18px}
+.kpi-sub{color:var(--muted);font-size:12px;margin-top:4px}
+.card.capes{border-left:4px solid var(--capes)}
+.card.fapemat{border-left:4px solid var(--fapemat)}
+.card.mpe{border-left:4px solid var(--mpe)}
+.card.unemat{border-left:4px solid var(--unemat)}
 
-/* BUTTONS */
-.btn-primary{color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:.35rem}
-.btn-sm{background:none;border:1px solid #E5E7EB;border-radius:7px;padding:.28rem .55rem;color:#6B7280;display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem}
-.btn-danger{background:none;border:1px solid #FCA5A5;border-radius:7px;padding:.28rem .55rem;color:#DC2626;display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem}
-.btn-filter{background:none;border:1px solid #E5E7EB;border-radius:7px;padding:.4rem .8rem;font-size:.78rem;color:#6B7280;font-weight:500}
-.btn-filter.active{background:#F5F3FF;border-color:#7C3AED;color:#7C3AED;font-weight:700}
-.btn-filter-blue.active{background:#EFF6FF;border-color:#2563EB;color:#2563EB;font-weight:700}
+.bar{height:8px;background:var(--panel-2);border-radius:999px;overflow:hidden;margin-top:8px;position:relative}
+.bar > span{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .5s}
+.bar.capes > span{background:var(--capes)}
+.bar.fapemat > span{background:var(--fapemat)}
+.bar.mpe > span{background:var(--mpe)}
+.bar.ok > span{background:var(--ok)}
 
-/* PROGRESS BAR */
-.prog-wrap{height:6px;background:#F3F4F6;border-radius:10px}
-.prog-bar{height:100%;border-radius:10px;transition:width .3s}
-.prog-wrap-sm{height:5px;background:#F3F4F6;border-radius:10px}
-.prog-wrap-xs{height:4px;background:#F3F4F6;border-radius:10px}
+/* Source selector */
+.source-selector{display:flex;gap:10px;margin:0 0 18px;flex-wrap:wrap}
+.source-btn{flex:1;min-width:220px;padding:14px 16px;border-radius:10px;border:2px solid var(--border);background:var(--panel);cursor:pointer;color:var(--text);text-align:left;font-size:13px;transition:all .15s;display:flex;align-items:center;gap:12px;font-family:inherit}
+.source-btn:hover{border-color:var(--accent)}
+.source-btn.active.capes{border-color:var(--capes);background:var(--capes-bg)}
+.source-btn.active.fapemat{border-color:var(--fapemat);background:var(--fapemat-bg)}
+.source-btn.active.mpe{border-color:var(--mpe);background:var(--mpe-bg)}
+.source-btn.active[data-source="todos"]{border-color:var(--accent);background:rgba(78,161,255,.1)}
+.source-btn-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#fff;flex:none}
+.source-btn.capes .source-btn-icon{background:var(--capes)}
+.source-btn.fapemat .source-btn-icon{background:var(--fapemat)}
+.source-btn.mpe .source-btn-icon{background:var(--mpe)}
+.source-btn-info strong{display:block;font-size:14px;margin-bottom:2px}
+.source-btn-info span{color:var(--muted);font-size:11px}
 
-/* CHECKBOX */
-.cb{width:18px;height:18px;border-radius:5px;border:2px solid #D1D5DB;background:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0;padding:12px;background:var(--panel);border:1px solid var(--border);border-radius:10px}
+.toolbar input[type="text"],.toolbar select{background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:6px;font-size:13px;outline:none;font-family:inherit}
+.toolbar input[type="text"]{min-width:240px}
+.toolbar input[type="text"]:focus,.toolbar select:focus{border-color:var(--accent)}
+.toolbar label{color:var(--muted);font-size:12px;margin-right:2px}
+.toolbar .spacer{flex:1}
+.chip-filter{background:var(--chip);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:999px;font-size:11px;cursor:pointer;font-family:inherit}
+.chip-filter.active{background:var(--accent);color:#0b1220;border-color:var(--accent);font-weight:600}
 
-/* OBJ ROWS */
-.obj-row{display:flex;align-items:flex-start;gap:.75rem;padding:.65rem .75rem;background:#FAFAFA;border-radius:10px;border:1px solid #F3F4F6;margin-bottom:.5rem}
-.obj-row.done{background:#F0FDF4;border-color:#BBF7D0}
-.obj-text{flex:1;min-width:0;font-size:.83rem;color:#111827;line-height:1.5}
-.obj-text.done{color:#6B7280;text-decoration:line-through}
-.obj-meta{font-size:.72rem;color:#9CA3AF;margin-top:.2rem;display:block}
+.table-wrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--panel-2);padding:10px 12px;text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border)}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--border)}
+tbody tr:hover{background:var(--panel-2)}
+tbody tr:last-child td{border-bottom:none}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+td.cat span,td.fonte span,td.natureza span{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600;white-space:nowrap}
+.cat-consumo{background:#1e3a5f;color:#88c0ff}
+.cat-pintura{background:#4a2a5f;color:#d9a9ff}
+.cat-escritorio{background:#2a4a3f;color:#99e0c2}
+.cat-combustivel{background:#5f3a1e;color:#ffc088}
+.cat-limpeza{background:#3a4a2a;color:#c2e099}
+.cat-servicos{background:#4a3a5f;color:#c9a9ff}
+.cat-diarias{background:#5f4a2a;color:#ffd099}
+.cat-passagens{background:#2a4a5f;color:#88d0ff}
+.cat-alimentacao{background:#5f2a2a;color:#ff9999}
+.cat-comunicacao{background:#2a5f5f;color:#99e0e0}
+.cat-permanente{background:#5f2a4f;color:#ff99cf}
+.cat-kits{background:#3a5f2a;color:#b0e099}
+.cat-hospedagem{background:#5f4a4a;color:#ffc0c0}
+.cat-outros{background:#44485a;color:#c9d1df}
+.fonte-capes{background:#1e3a5f;color:#88c0ff}
+.fonte-fapemat{background:#1e4f2f;color:#88ff9f}
+.fonte-mpe{background:#3f1e5f;color:#d8a0ff}
+.nat-custeio{background:#2a4a3f;color:#99e0c2}
+.nat-permanente{background:#5f2a4f;color:#ff99cf}
 
-/* GANTT */
-.gantt-wrap{display:flex}
-.gantt-labels{width:230px;flex-shrink:0}
-.gantt-labels .gl-header{height:36px;border-bottom:1px solid #F3F4F6;display:flex;align-items:center;padding-left:8px}
-.gantt-labels .gl-row{height:48px;border-bottom:1px solid #F9FAFB;display:flex;align-items:center;padding:0 8px;gap:.4rem}
-.gantt-timeline{flex:1;overflow-x:auto}
-.gantt-inner{min-width:560px;position:relative}
-.year-header{height:36px;position:relative;border-bottom:1px solid #E5E7EB;background:#F9FAFB}
-.year-tick{position:absolute;height:100%;border-left:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#374151}
-.today-line{position:absolute;top:0;bottom:0;width:2px;background:#EF4444;z-index:10}
-.today-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#EF4444;color:#fff;font-size:.6rem;font-weight:700;border-radius:4px;padding:1px 4px;white-space:nowrap}
-.gantt-row{height:48px;border-bottom:1px solid #F9FAFB;position:relative}
-.gantt-bar{position:absolute;height:28px;top:10px;border-radius:7px;z-index:6;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;gap:3px}
-.gantt-bar-btn{background:rgba(255,255,255,.25);border:none;border-radius:4px;padding:2px 4px;color:#fff;display:flex;align-items:center}
-.gantt-legend{padding:.75rem .5rem;display:flex;gap:1rem;flex-wrap:wrap}
-.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.73rem;color:#6B7280}
-.legend-dot{width:12px;height:12px;border-radius:3px}
+tfoot td{padding:12px;background:var(--panel-2);font-weight:700;font-size:13px}
 
-/* BUDGET */
-.budget-row{padding:.85rem 1rem;border-bottom:1px solid #F3F4F6}
-.budget-figures{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.5rem}
-.budget-fig label{font-size:.68rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.04em;display:block}
-.budget-fig .val{font-size:.88rem;font-weight:700}
+/* Docs */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.doc-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;gap:12px;transition:transform .15s,border-color .15s}
+.doc-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.doc-icon{flex:none;width:40px;height:50px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#fff}
+.doc-icon.pdf{background:#c63c3c}
+.doc-icon.docx{background:#2b579a}
+.doc-content{flex:1;min-width:0}
+.doc-content h4{margin:0 0 3px;font-size:13px;line-height:1.3}
+.doc-content p{margin:0;color:var(--muted);font-size:11px}
+.doc-tag{display:inline-block;margin-top:6px;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.doc-tag.capes{background:#1e3a5f;color:#88c0ff}
+.doc-tag.fapemat{background:#1e4f2f;color:#88ff9f}
+.doc-tag.mpe{background:#3f1e5f;color:#d8a0ff}
+.doc-tag.unemat{background:#4f3f1e;color:#ffd188}
+.doc-tag.legal{background:#44485a;color:#c9d1df}
 
-/* TEAM CARDS */
-.team-card{background:#fff;border-radius:14px;padding:1.1rem;box-shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);border-top:3px solid #ccc;display:flex;flex-direction:column;gap:.75rem}
-.avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.88rem;font-weight:700;flex-shrink:0}
-.team-meta{font-size:.73rem;color:#9CA3AF;display:flex;gap:1rem;flex-wrap:wrap}
+.obj-list{list-style:none;padding:0;margin:0}
+.obj-list li{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+.obj-list li:last-child{border-bottom:none}
+.obj-num{flex:none;width:24px;height:24px;border-radius:50%;background:var(--panel-2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
 
-/* DOC ROWS */
-.doc-row{padding:1rem;border-bottom:1px solid #F3F4F6;display:flex;align-items:flex-start;gap:.75rem}
-.doc-icon{width:40px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* Alertas */
+.alert{background:rgba(240,136,62,.1);border:1px solid var(--warn);padding:12px 16px;border-radius:9px;margin:14px 0;display:flex;gap:12px;align-items:flex-start;font-size:13px}
+.alert.info{background:rgba(78,161,255,.1);border-color:var(--accent)}
+.alert.capes{background:var(--capes-bg);border-color:var(--capes)}
+.alert.fapemat{background:var(--fapemat-bg);border-color:var(--fapemat)}
+.alert.mpe{background:var(--mpe-bg);border-color:var(--mpe)}
+.alert-icon{font-size:18px;line-height:1}
 
-/* MODAL */
-#modalOverlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem}
-#modalOverlay.open{display:flex}
-#modalBox{background:#fff;border-radius:18px;padding:2rem;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.2)}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
-.modal-header h3{font-size:1.05rem;font-weight:700;color:#111827}
-.modal-close{background:#F3F4F6;border:none;border-radius:8px;padding:.4rem;color:#374151;display:flex}
-.modal-footer{margin-top:1.5rem;display:flex;justify-content:flex-end;gap:.6rem}
-.field-group{margin-bottom:1rem}
-.field-group label{display:block;margin-bottom:.3rem;font-size:.78rem;font-weight:600;color:#374151}
-.field-group input,.field-group select,.field-group textarea{width:100%;border-radius:8px;border:1.5px solid #E5E7EB;padding:.55rem .8rem;font-size:.875rem;font-family:inherit;outline:none;box-sizing:border-box}
-.field-group textarea{resize:vertical}
-.grid-2cols{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-.cb-label{display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.85rem;color:#374151}
-.cb-label input{width:16px;height:16px}
+/* Checklist de objetivos */
+.check-item{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.check-item:last-child{border-bottom:none}
+.check-item:hover{background:var(--panel-2)}
+.check-item input[type="checkbox"]{margin-top:3px;width:18px;height:18px;accent-color:var(--accent-2);flex:none;cursor:pointer}
+.check-item.done .check-text{text-decoration:line-through;color:var(--muted)}
+.check-text{flex:1;font-size:14px}
+.check-meta{font-size:11px;color:var(--muted);margin-top:4px}
 
-/* SECTION */
-.section-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
-.section-head-left{}
-.section-title{font-weight:700;font-size:.95rem;color:#111827;display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem}
-.page-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;margin-bottom:1.25rem}
-.page-title{font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:#111827}
-.filters{display:flex;gap:.5rem;flex-wrap:wrap}
-.empty{color:#9CA3AF;text-align:center;padding:2rem;font-size:.85rem}
+/* Gantt */
+.gantt-wrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:auto;padding:16px;margin-top:14px}
+.gantt{min-width:900px;position:relative}
+.gantt-header{display:grid;gap:2px;margin-bottom:8px;position:sticky;top:0;background:var(--panel);z-index:2}
+.gantt-header .g-label{font-size:11px;color:var(--muted);padding:4px;text-transform:uppercase;letter-spacing:.3px}
+.gantt-header .g-month{font-size:10px;color:var(--muted);padding:6px 2px;text-align:center;background:var(--panel-2);border-radius:4px;white-space:nowrap}
+.gantt-header .g-month.highlight{background:rgba(78,161,255,.2);color:var(--accent);font-weight:700}
+.gantt-row{display:grid;gap:2px;margin-bottom:2px;align-items:center}
+.gantt-row .g-label{font-size:12px;padding:8px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gantt-row .g-cell{height:28px;background:var(--panel-2);border-radius:3px;position:relative}
+.gantt-row .g-cell.in-range{background:var(--panel-3)}
+.gantt-bar{position:absolute;top:4px;bottom:4px;left:2px;right:2px;background:var(--accent);border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:10px;color:#0b1220;font-weight:700;white-space:nowrap;overflow:hidden}
+.gantt-bar.capes{background:var(--capes);color:#fff}
+.gantt-bar.fapemat{background:var(--fapemat);color:#0b1220}
+.gantt-bar.mpe{background:var(--mpe);color:#fff}
+.gantt-bar.done{opacity:.5}
+.gantt-today-line{position:absolute;top:0;bottom:0;width:2px;background:var(--warn);z-index:3;pointer-events:none}
+.gantt-today-label{position:absolute;top:-4px;background:var(--warn);color:#0b1220;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;white-space:nowrap;transform:translateX(-50%)}
+
+/* Progresso */
+.progress-big{display:flex;align-items:center;gap:14px;padding:12px 0}
+.progress-ring{width:60px;height:60px;flex:none;position:relative}
+.progress-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.progress-ring circle{fill:none;stroke-width:6}
+.progress-ring .bg-ring{stroke:var(--panel-2)}
+.progress-ring .fg-ring{stroke:var(--accent-2);stroke-linecap:round;transition:stroke-dashoffset .6s}
+.progress-ring .pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:700}
+
+/* Time label */
+.time-label{display:inline-block;padding:2px 8px;background:var(--chip);border-radius:4px;font-size:10px;color:var(--muted);margin-left:6px;font-variant-numeric:tabular-nums}
+
+/* Team badges */
+.team-table td{padding:9px 10px;font-size:12px;vertical-align:top}
+.team-name{font-weight:600}
+.team-ppg{color:var(--muted);font-size:11px}
+.role-chip{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
+.role-coord{background:#1e3a5f;color:#88c0ff}
+.role-pesq{background:#4a3a5f;color:#c9a9ff}
+.role-exec{background:#2a4a3f;color:#99e0c2}
+.role-colab{background:#44485a;color:#c9d1df}
+.role-articul{background:#4f3f1e;color:#ffd188}
+
+footer{margin-top:32px;padding:18px 28px;text-align:center;color:var(--muted);font-size:11px;border-top:1px solid var(--border)}
+
+@media(max-width:700px){
+  main{padding:14px}
+  header{padding:14px}
+  .brand h1{font-size:16px}
+  .source-selector{flex-direction:column}
+  thead th,tbody td{padding:7px 8px;font-size:12px}
+}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="loginScreen">
-  <div id="loginBox">
-    <h1>Transforma-Ações</h1>
-    <p>Sistema de Gestão do Projeto<br/>UNEMAT · CAPES · FAPEMAT</p>
-    <input type="password" id="pwdInput" placeholder="Senha de acesso" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <button class="btn-primary" id="loginBtn" style="background:linear-gradient(135deg,#1E3A8A,#7C3AED)" onclick="doLogin()">Entrar</button>
-    <div id="loginErr"></div>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app">
 <header>
-  <div class="header-inner">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.2rem">
-      <div class="logos">
-        <span class="logo-badge">UNEMAT</span>
-        <div class="logo-divider"></div>
-        <span class="logo-badge">CAPES</span>
-        <div class="logo-divider"></div>
-        <span class="logo-badge">FAPEMAT</span>
-      </div>
-      <div class="header-meta">
-        <span>PROEXT-PG CAPES 03/2024</span>
-        <span>AUXPE 88881.927459/2023-01</span>
-      </div>
+  <div class="brand">
+    <div class="brand-mark">TA</div>
+    <div>
+      <h1>Plataforma de Gestão — UNEMAT</h1>
+      <p>Coordenador: Ernandes Sobreira Oliveira Junior</p>
     </div>
-    <h1 class="title">Transforma-Ações</h1>
-    <p class="title-sub">Integrando Saberes para Ações Sustentáveis &mdash; UNEMAT/Cáceres-MT</p>
-    <div class="stat-cards" id="headerStats"></div>
+  </div>
+  <div class="header-meta">
+    <span class="badge">CPF: <strong>008.380.531-14</strong></span>
+    <span class="badge">Instituição: <strong>UNEMAT</strong></span>
+    <span class="badge" id="hoje">—</span>
   </div>
 </header>
 
-<nav>
-  <div class="nav-inner" id="navTabs"></div>
+<div class="project-switcher">
+  <span class="label">Projeto ativo:</span>
+  <button class="proj-pill active" data-proj="ta">
+    <span class="proj-pill-dot proj-ta-dot"></span>
+    <span><strong>Transforma-Ações</strong> · CAPES + FAPEMAT · R$ 479.400</span>
+  </button>
+  <button class="proj-pill" data-proj="cop">
+    <span class="proj-pill-dot proj-cop-dot"></span>
+    <span><strong>COP Pantanal</strong> · MPE/BAPRE · R$ 65.000</span>
+  </button>
+</div>
+
+<nav class="tabs" id="navTabs">
+  <!-- Preenchido dinamicamente por projeto -->
 </nav>
 
-<main id="mainContent"></main>
-</div>
+<main id="appMain">
+<!-- ============================================================ -->
+<!-- ======================== PROJETO TA ======================== -->
+<!-- ============================================================ -->
+<div class="project-content" data-proj="ta">
 
-<!-- MODAL -->
-<div id="modalOverlay">
-  <div id="modalBox">
-    <div class="modal-header">
-      <h3 id="modalTitle"></h3>
-      <button class="modal-close" onclick="closeModal()">&#10005;</button>
+<section class="section active" id="ta-dashboard">
+  <h2 class="section-title"><span class="dot"></span>Transforma-Ações · Visão Geral</h2>
+  <p class="section-sub">"Integrando Saberes para Ações Sustentáveis" — PROEXT-PG com contrapartida FAPEMAT. Duração: 24 meses (início 01/11/2025).</p>
+
+  <div class="grid cols-4">
+    <div class="card capes">
+      <h3>Orçamento CAPES</h3>
+      <p class="kpi">R$ 239.700,00</p>
+      <p class="kpi-sub">6 rubricas de custeio</p>
     </div>
-    <div id="modalBody"></div>
-    <div class="modal-footer">
-      <button class="btn-sm" onclick="closeModal()" style="padding:.5rem 1rem;font-size:.85rem">Cancelar</button>
-      <button class="btn-primary" style="background:#2563EB;padding:.5rem 1rem;font-size:.85rem" onclick="saveModal()">Salvar</button>
+    <div class="card fapemat">
+      <h3>Orçamento FAPEMAT</h3>
+      <p class="kpi">R$ 239.700,00</p>
+      <p class="kpi-sub">Custeio + Permanente</p>
+    </div>
+    <div class="card">
+      <h3>Total do Projeto</h3>
+      <p class="kpi">R$ 479.400,00</p>
+      <p class="kpi-sub">CAPES + FAPEMAT (1:1)</p>
+    </div>
+    <div class="card unemat">
+      <h3>Execução de Atividades</h3>
+      <div class="progress-big">
+        <div class="progress-ring">
+          <svg viewBox="0 0 60 60"><circle class="bg-ring" cx="30" cy="30" r="25"/><circle class="fg-ring" id="taProgressRing" cx="30" cy="30" r="25" stroke-dasharray="157" stroke-dashoffset="157"/></svg>
+          <div class="pct" id="taProgressPct">0%</div>
+        </div>
+        <div>
+          <p class="kpi-sub" id="taProgressLabel">0 de 8 atividades</p>
+          <p class="kpi-sub" style="margin-top:2px">Mês <span id="taMonthNow">—</span> de 24</p>
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h3>Distribuição CAPES vs FAPEMAT</h3>
+      <div style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span>🔵 CAPES (PROEXT-PG)</span>
+          <span style="color:var(--muted)">R$ 239.700,00 · 50%</span>
+        </div>
+        <div class="bar capes"><span style="width:50%"></span></div>
+      </div>
+      <div style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span>🟢 FAPEMAT (Contrapartida)</span>
+          <span style="color:var(--muted)">R$ 239.700,00 · 50%</span>
+        </div>
+        <div class="bar fapemat"><span style="width:50%"></span></div>
+      </div>
+      <hr style="border-color:var(--border);margin:16px 0">
+      <h3>Rubricas FAPEMAT</h3>
+      <div id="fapematBars" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h3>Rubricas CAPES</h3>
+      <div id="capesBars" style="margin-top:8px"></div>
+      <hr style="border-color:var(--border);margin:16px 0">
+      <h3>Regras críticas</h3>
+      <ul class="obj-list" style="margin-top:4px">
+        <li><div class="obj-num">!</div><div><strong>Fontes separadas:</strong> CAPES e FAPEMAT exigem prestações de contas independentes.</div></li>
+        <li><div class="obj-num">!</div><div><strong>FAPEMAT:</strong> única fonte com material permanente (R$ 21.200,00).</div></li>
+        <li><div class="obj-num">!</div><div><strong>Concentração Ano 1:</strong> R$ 221.247,50 da FAPEMAT (92%) será executado nos primeiros 12 meses.</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="ta-itens">
+  <h2 class="section-title"><span class="dot"></span>Itens de Compra · Transforma-Ações</h2>
+  <p class="section-sub">Selecione a fonte de financiamento. Itens discriminados por natureza (Custeio / Permanente).</p>
+
+  <div class="source-selector">
+    <button class="source-btn capes active" data-source="capes">
+      <div class="source-btn-icon">CAPES</div>
+      <div class="source-btn-info"><strong>CAPES — PROEXT-PG</strong><span>6 rubricas · R$ 239.700,00</span></div>
+    </button>
+    <button class="source-btn fapemat" data-source="fapemat">
+      <div class="source-btn-icon">FPMT</div>
+      <div class="source-btn-info"><strong>FAPEMAT — Contrapartida</strong><span>53 itens · R$ 239.700,00</span></div>
+    </button>
+    <button class="source-btn" data-source="todos">
+      <div class="source-btn-icon" style="background:var(--accent)">ALL</div>
+      <div class="source-btn-info"><strong>Todos</strong><span>Visão unificada</span></div>
+    </button>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="buscaItem" placeholder="🔍 Buscar item, descrição…">
+    <label>Natureza:</label>
+    <select id="filtroNat"><option value="">Todas</option><option value="custeio">Custeio</option><option value="permanente">Permanente</option></select>
+    <label>Categoria:</label>
+    <select id="filtroCat"><option value="">Todas</option></select>
+    <div class="spacer"></div>
+    <span class="badge" id="contadorItens">—</span>
+    <span class="badge" id="somaItens">—</span>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabelaItens">
+      <thead><tr id="theadItens"></tr></thead>
+      <tbody id="corpoItens"></tbody>
+      <tfoot>
+        <tr>
+          <td id="totalLabel" style="text-align:right"></td>
+          <td class="num" id="totalValor"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="alert" id="alertaFonte" style="margin-top:16px"></div>
+</section>
+
+<section class="section" id="ta-capes">
+  <h2 class="section-title"><span class="dot" style="background:var(--capes)"></span>CAPES — PROEXT-PG</h2>
+  <p class="section-sub">Fonte principal · Programa de Extensão da Pós-Graduação · Chamada 03/2024.</p>
+
+  <div class="grid cols-3">
+    <div class="card capes"><h3>Edital</h3><p class="kpi small">Chamada CAPES 03/2024</p><p class="kpi-sub">PROEXT-PG</p></div>
+    <div class="card capes"><h3>Valor Aprovado</h3><p class="kpi">R$ 239.700,00</p><p class="kpi-sub">Somente Custeio</p></div>
+    <div class="card capes"><h3>Vínculo</h3><p class="kpi small">PROPG + PROEC</p><p class="kpi-sub">Pós-graduação UNEMAT</p></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Orçamento Detalhado CAPES — Custeio</h3>
+    <div class="table-wrap" style="margin-top:8px;border:1px solid var(--border)">
+      <table>
+        <thead><tr><th>Rubrica</th><th style="text-align:right">Valor (R$)</th><th style="text-align:right">% do total</th></tr></thead>
+        <tbody>
+          <tr><td>Diárias e passagens</td><td class="num">70.400,00</td><td class="num">29,4%</td></tr>
+          <tr><td>Custos de comunicação e divulgação</td><td class="num">63.000,00</td><td class="num">26,3%</td></tr>
+          <tr><td>Material de consumo</td><td class="num">61.410,00</td><td class="num">25,6%</td></tr>
+          <tr><td>Serviços terceirizados</td><td class="num">29.890,00</td><td class="num">12,5%</td></tr>
+          <tr><td>Alimentação</td><td class="num">15.000,00</td><td class="num">6,3%</td></tr>
+          <tr><td>Locação de equipamentos</td><td class="num" style="color:var(--muted)">—</td><td class="num" style="color:var(--muted)">—</td></tr>
+        </tbody>
+        <tfoot><tr><td style="text-align:right"><strong>TOTAL CAPES:</strong></td><td class="num" style="color:var(--capes)"><strong>R$ 239.700,00</strong></td><td></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="alert capes" style="margin-top:16px">
+    <span class="alert-icon">💡</span>
+    <div><strong>Regra CAPES:</strong> Rubricas fechadas. Remanejamento entre elas requer autorização formal. Toda NF identificada como <strong>CAPES / PROEXT-PG</strong>. Somente custeio — não contempla material permanente.</div>
+  </div>
+</section>
+
+<section class="section" id="ta-fapemat">
+  <h2 class="section-title"><span class="dot" style="background:var(--fapemat)"></span>FAPEMAT — Contrapartida</h2>
+  <p class="section-sub">Contrapartida à Chamada CAPES 03/2024 · Processo FAPEMAT-PRO.0002209/2025.</p>
+
+  <div class="grid cols-4">
+    <div class="card fapemat"><h3>Processo</h3><p class="kpi small" style="font-size:13px">FAPEMAT-PRO.0002209/2025</p></div>
+    <div class="card fapemat"><h3>Valor Total</h3><p class="kpi">R$ 239.700,00</p><p class="kpi-sub">Custeio + Permanente</p></div>
+    <div class="card fapemat"><h3>Duração</h3><p class="kpi">24 meses</p><p class="kpi-sub">Início: 01/11/2025</p></div>
+    <div class="card fapemat"><h3>Protocolo</h3><p class="kpi small" style="font-size:12px">61065.844.25649.27102025</p><p class="kpi-sub">27/10/2025</p></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Orçamento Detalhado FAPEMAT — Todas as Rubricas</h3>
+    <div class="table-wrap" style="margin-top:8px;border:1px solid var(--border)">
+      <table>
+        <thead><tr><th>Elemento de Despesa</th><th>Natureza</th><th style="text-align:right">Valor (R$)</th><th style="text-align:right">% do total</th></tr></thead>
+        <tbody>
+          <tr><td>Material de Consumo</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num">91.063,50</td><td class="num">38,0%</td></tr>
+          <tr><td>Outros Serviços de Terceiros</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num">69.000,00</td><td class="num">28,8%</td></tr>
+          <tr><td>Diárias</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num">51.936,50</td><td class="num">21,7%</td></tr>
+          <tr><td>Equipamentos e Material Permanente</td><td class="natureza"><span class="nat-permanente">Permanente</span></td><td class="num">21.200,00</td><td class="num">8,8%</td></tr>
+          <tr><td>Passagens</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num">6.500,00</td><td class="num">2,7%</td></tr>
+          <tr><td style="color:var(--muted)">Hospedagem / Alimentação</td><td class="natureza"><span class="nat-custeio">Custeio</span></td><td class="num" style="color:var(--muted)">—</td><td class="num" style="color:var(--muted)">—</td></tr>
+          <tr><td style="color:var(--muted)">Pessoal / Encargos / Bolsas</td><td></td><td class="num" style="color:var(--muted)">—</td><td class="num" style="color:var(--muted)">—</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2" style="text-align:right"><strong>TOTAL FAPEMAT:</strong></td><td class="num" style="color:var(--fapemat)"><strong>R$ 239.700,00</strong></td><td></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h3>Execução por Trimestre — Ano 1</h3>
+      <div class="table-wrap" style="margin-top:8px;border:1px solid var(--border)">
+        <table>
+          <thead><tr><th>Trim.</th><th style="text-align:right">Valor</th><th style="text-align:right">%</th></tr></thead>
+          <tbody>
+            <tr><td>T1 (nov/25–jan/26)</td><td class="num">201.874,00</td><td class="num">84,2%</td></tr>
+            <tr><td>T2 (fev–abr/26)</td><td class="num">9.982,50</td><td class="num">4,2%</td></tr>
+            <tr><td>T3 (mai–jul/26)</td><td class="num">0,00</td><td class="num">0,0%</td></tr>
+            <tr><td>T4 (ago–out/26)</td><td class="num">9.391,00</td><td class="num">3,9%</td></tr>
+          </tbody>
+          <tfoot><tr><td style="text-align:right"><strong>Ano 1:</strong></td><td class="num"><strong>R$ 221.247,50</strong></td><td></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Execução por Trimestre — Ano 2</h3>
+      <div class="table-wrap" style="margin-top:8px;border:1px solid var(--border)">
+        <table>
+          <thead><tr><th>Trim.</th><th style="text-align:right">Valor</th><th style="text-align:right">%</th></tr></thead>
+          <tbody>
+            <tr><td>T1 (nov/26–jan/27)</td><td class="num">4.537,50</td><td class="num">24,6%</td></tr>
+            <tr><td>T2 (fev–abr/27)</td><td class="num">7.865,00</td><td class="num">42,6%</td></tr>
+            <tr><td>T3 (mai–jul/27)</td><td class="num">0,00</td><td class="num">0,0%</td></tr>
+            <tr><td>T4 (ago–out/27)</td><td class="num">6.050,00</td><td class="num">32,8%</td></tr>
+          </tbody>
+          <tfoot><tr><td style="text-align:right"><strong>Ano 2:</strong></td><td class="num"><strong>R$ 18.452,50</strong></td><td></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert fapemat" style="margin-top:16px">
+    <span class="alert-icon">⚠️</span>
+    <div><strong>Atenção à concentração:</strong> 84% do orçamento FAPEMAT é executado no 1º trimestre (material de consumo R$ 91k + serviços R$ 69k + permanente R$ 21k = R$ 181.263,50 em novembro/25-janeiro/26). Planejamento de compras e contratações deve estar pronto no início.</div>
+  </div>
+</section>
+
+<section class="section" id="ta-gantt">
+  <h2 class="section-title"><span class="dot"></span>Cronograma Gantt · Transforma-Ações</h2>
+  <p class="section-sub">Cronograma oficial FAPEMAT · 8 atividades · 24 meses · marque atividades concluídas no checklist abaixo.</p>
+
+  <div class="gantt-wrap">
+    <div class="gantt" id="ganttTA"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Checklist de Atividades — Marque o que já foi feito</h3>
+    <div id="checklistTA"></div>
+  </div>
+</section>
+
+<section class="section" id="ta-equipe">
+  <h2 class="section-title"><span class="dot"></span>Equipe · Transforma-Ações (FAPEMAT)</h2>
+  <p class="section-sub">11 membros conforme Plano de Trabalho FAPEMAT (Protocolo 0002209/2025).</p>
+
+  <div class="table-wrap">
+    <table class="team-table">
+      <thead><tr><th>#</th><th>Membro</th><th>Instituição</th><th>Função</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="team-name">Ernandes Sobreira Oliveira Junior</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-coord">Coordenador</span></td></tr>
+        <tr><td>2</td><td class="team-name">Danielle Tavares Teixeira</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-pesq">Pesquisadora / Co-executora</span></td></tr>
+        <tr><td>3</td><td class="team-name">Wilkinson Lopes Lázaro</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-colab">Colaborador</span></td></tr>
+        <tr><td>4</td><td class="team-name">Sandra Mara Alves da Silva Neves</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-colab">Colaboradora</span></td></tr>
+        <tr><td>5</td><td class="team-name">Leila Nalis Paiva da Silva Andrade</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-colab">Colaboradora</span></td></tr>
+        <tr><td>6</td><td class="team-name">Adriano Marcos Romano</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-exec">Colaborador / Executor</span></td></tr>
+        <tr><td>7</td><td class="team-name">Beatriz Ferraz Bühler</td><td class="team-ppg">SEDUC</td><td><span class="role-chip role-exec">Colaboradora / Executora</span></td></tr>
+        <tr><td>8</td><td class="team-name">Renato Fonseca de Arruda</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-exec">Colaborador / Executor</span></td></tr>
+        <tr><td>9</td><td class="team-name">Jonathan Anderson de Paula Caldas</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-exec">Colaborador / Executor</span></td></tr>
+        <tr><td>10</td><td class="team-name">Aurea Regina Alves Ignacio</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-articul">Articuladora</span></td></tr>
+        <tr><td>11</td><td class="team-name">Everton Ricardo do Nascimento</td><td class="team-ppg">UNEMAT</td><td><span class="role-chip role-articul">Articulador</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="ta-projeto">
+  <h2 class="section-title"><span class="dot"></span>Informações do Projeto · Transforma-Ações</h2>
+
+  <div class="card">
+    <h3>Objetivo Geral</h3>
+    <p style="margin:6px 0 0;line-height:1.7;font-size:14px">Convergir conhecimentos e práticas dos cursos de pós-graduação em um ambiente colaborativo de ação, catalisando transformações sustentáveis por meio de ações integradas nas áreas de <strong>meio ambiente, tecnologias, ensino e linguagens, e indígena</strong>, atuando com, na e para a sociedade.</p>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h3>Objetivos Específicos (marque o progresso)</h3>
+      <div id="objetivosTA"></div>
+    </div>
+    <div class="card">
+      <h3>Abrangência · 14 Municípios MT</h3>
+      <ul class="obj-list">
+        <li><div class="obj-num">📍</div><div>Alta Floresta · Alto Araguaia · Barra do Bugres · Cáceres</div></li>
+        <li><div class="obj-num">📍</div><div>Colíder · Cuiabá · Diamantino · Juara</div></li>
+        <li><div class="obj-num">📍</div><div>Luciara · Nova Mutum · Nova Xavantina</div></li>
+        <li><div class="obj-num">📍</div><div>Pontes e Lacerda · Sinop · Tangará da Serra</div></li>
+      </ul>
+      <h3 style="margin-top:14px">Áreas Temáticas</h3>
+      <ul class="obj-list">
+        <li><div class="obj-num">🌿</div><div><strong>Meio Ambiente</strong></div></li>
+        <li><div class="obj-num">⚙️</div><div><strong>Tecnologias</strong></div></li>
+        <li><div class="obj-num">📚</div><div><strong>Ensino e Linguagens</strong></div></li>
+        <li><div class="obj-num">🪶</div><div><strong>Indígena</strong></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h3>Resultados Esperados</h3>
+      <ul class="obj-list">
+        <li><div class="obj-num">✓</div><div>Projetos inovadores inter e transdisciplinares.</div></li>
+        <li><div class="obj-num">✓</div><div>Formação de profissionais com visão integrada.</div></li>
+        <li><div class="obj-num">✓</div><div>Valorização da cultura indígena.</div></li>
+        <li><div class="obj-num">✓</div><div>Inclusão socioprodutiva de comunidades tradicionais, catadores, indígenas.</div></li>
+        <li><div class="obj-num">✓</div><div>Fortalecimento da identidade acadêmica da UNEMAT.</div></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Impactos</h3>
+      <ul class="obj-list">
+        <li><div class="obj-num">👥</div><div><strong>Sociais</strong> — Inserção comunitária, grupos vulnerabilizados, protagonismo jovem.</div></li>
+        <li><div class="obj-num">🌎</div><div><strong>Ambientais</strong> — Educação ambiental, cooperação com Bolívia, monitoramento.</div></li>
+        <li><div class="obj-num">💼</div><div><strong>Econômicos</strong> — Empresas júnior, cooperativas, cadeias sustentáveis.</div></li>
+        <li><div class="obj-num">🎓</div><div><strong>Educacionais</strong> — Livros, cartilhas, vídeos, podcasts, cursos integrados.</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="ta-documentos">
+  <h2 class="section-title"><span class="dot"></span>Documentos · Transforma-Ações</h2>
+
+  <div class="toolbar">
+    <button class="chip-filter active" data-docfilter="todos">Todos</button>
+    <button class="chip-filter" data-docfilter="capes">CAPES</button>
+    <button class="chip-filter" data-docfilter="fapemat">FAPEMAT</button>
+    <button class="chip-filter" data-docfilter="unemat">UNEMAT</button>
+    <button class="chip-filter" data-docfilter="legal">Legislação</button>
+  </div>
+
+  <div class="doc-grid" id="docGridTA">
+    <a class="doc-card" data-cat="capes" href="documentos/PROJETO_DE_EXTENSAOCAPESFINAL2_assinado_assinado_assinado_1.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Projeto de Extensão CAPES (final, assinado)</h4><p>PROEXT-PG — versão final</p><span class="doc-tag capes">CAPES</span></div></a>
+    <a class="doc-card" data-cat="capes" href="documentos/projeto_extensão_enviado_via_sigaa_para_a_proec.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Projeto enviado via SIGAA (PROEC)</h4><p>Submissão oficial UNEMAT</p><span class="doc-tag capes">CAPES</span></div></a>
+    <a class="doc-card" data-cat="capes" href="documentos/TERMO_DE_ACEITACAO_DA_CONCESSAO_DE_AUXILIO_FINANCEIRO.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Termo de Aceitação — Auxílio Financeiro</h4><p>Aceite formal da concessão</p><span class="doc-tag capes">CAPES</span></div></a>
+    <a class="doc-card" data-cat="fapemat" href="documentos/Projeto_FAPEMAT_completo.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Projeto FAPEMAT Completo</h4><p>Plano de Trabalho com orçamento detalhado</p><span class="doc-tag fapemat">FAPEMAT</span></div></a>
+    <a class="doc-card" data-cat="fapemat" href="documentos/projeto_TRANSFORMA-AÇÕES-_FAPEMAT.docx" target="_blank"><div class="doc-icon docx">DOCX</div><div class="doc-content"><h4>Projeto — Transforma-Ações (FAPEMAT)</h4><p>Resumo, objetivos, metodologia</p><span class="doc-tag fapemat">FAPEMAT</span></div></a>
+    <a class="doc-card" data-cat="fapemat" href="documentos/material_de_consumo_projeto_TRANSFORMAACOES_FAPEMAT.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Material de Consumo — Remanejamento</h4><p>28 itens · R$ 91.063,50</p><span class="doc-tag fapemat">FAPEMAT</span></div></a>
+    <a class="doc-card" data-cat="fapemat" href="documentos/Orientações_para__Remanejameno_de_Recurso_no_SIGFAPEMAT.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Orientações — Remanejamento SIGFAPEMAT</h4><p>Guia operacional</p><span class="doc-tag fapemat">FAPEMAT</span></div></a>
+    <a class="doc-card" data-cat="fapemat legal" href="documentos/Portaria_Conjunta_nº_1_de_18_de_Janeiro_de_2024.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Portaria Conjunta nº 1 · 18/01/2024</h4><p>Normativa de uso de recursos</p><span class="doc-tag fapemat">FAPEMAT</span></div></a>
+    <a class="doc-card" data-cat="fapemat legal" href="documentos/portaria0592013auxpesiprecpdf.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Portaria 059/2013 — Auxílio Pesquisador</h4><p>Normas auxílio à pesquisa</p><span class="doc-tag fapemat">FAPEMAT</span></div></a>
+    <a class="doc-card" data-cat="unemat" href="documentos/EDITAL_Nº_002_TRANSFORMA-AÇÕES.docx" target="_blank"><div class="doc-icon docx">DOCX</div><div class="doc-content"><h4>Edital nº 002 — Transforma-Ações</h4><p>Edital interno UNEMAT</p><span class="doc-tag unemat">UNEMAT</span></div></a>
+    <a class="doc-card" data-cat="legal" href="documentos/CNE_RES_CNECESN72018.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Resolução CNE/CES nº 7/2018</h4><p>Diretrizes de extensão na educação superior</p><span class="doc-tag legal">Legislação</span></div></a>
+    <a class="doc-card" data-cat="legal" href="documentos/PolíticaNacionaldeExtensãoUniversitáriaebook.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Política Nacional de Extensão Universitária</h4><p>FORPROEX</p><span class="doc-tag legal">Legislação</span></div></a>
+  </div>
+</section>
+
 </div>
+
+<!-- ============================================================ -->
+<!-- ======================== PROJETO COP ======================= -->
+<!-- ============================================================ -->
+<div class="project-content" data-proj="cop" style="display:none">
+
+<section class="section active" id="cop-dashboard">
+  <h2 class="section-title"><span class="dot" style="background:var(--mpe)"></span>COP Pantanal · Visão Geral</h2>
+  <p class="section-sub">"Saberes e Ações pelo Clima" · 10-12 de novembro de 2025, Cáceres-MT · Via BAPRE/MPE · Mobilização de 5.000 pessoas.</p>
+
+  <div class="grid cols-4">
+    <div class="card mpe"><h3>Valor Solicitado</h3><p class="kpi">R$ 65.000,00</p><p class="kpi-sub">MPE via BAPRE</p></div>
+    <div class="card mpe"><h3>Duração do Evento</h3><p class="kpi">3 dias</p><p class="kpi-sub">10–12 nov/2025</p></div>
+    <div class="card mpe"><h3>Mobilização</h3><p class="kpi">5.000</p><p class="kpi-sub">pessoas esperadas</p></div>
+    <div class="card unemat">
+      <h3>Execução de Etapas</h3>
+      <div class="progress-big">
+        <div class="progress-ring">
+          <svg viewBox="0 0 60 60"><circle class="bg-ring" cx="30" cy="30" r="25"/><circle class="fg-ring" id="copProgressRing" cx="30" cy="30" r="25" stroke-dasharray="157" stroke-dashoffset="157"/></svg>
+          <div class="pct" id="copProgressPct">0%</div>
+        </div>
+        <div><p class="kpi-sub" id="copProgressLabel">0 de 3 etapas</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h3>Orçamento por Rubrica</h3>
+      <div id="copBars" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h3>Informações-chave</h3>
+      <ul class="obj-list">
+        <li><div class="obj-num">📅</div><div><strong>Data do evento:</strong> 10, 11 e 12 de novembro de 2025</div></li>
+        <li><div class="obj-num">📍</div><div><strong>Local:</strong> Cáceres-MT · 22 municípios envolvidos</div></li>
+        <li><div class="obj-num">🏢</div><div><strong>Organização:</strong> UNEMAT + IFMT</div></li>
+        <li><div class="obj-num">📜</div><div><strong>Entrega central:</strong> Carta do Pantanal</div></li>
+        <li><div class="obj-num">🎪</div><div><strong>Estrutura:</strong> 12 tendas temáticas</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cop-itens">
+  <h2 class="section-title"><span class="dot" style="background:var(--mpe)"></span>Itens de Custo · COP Pantanal</h2>
+  <p class="section-sub">5 rubricas solicitadas ao MPE via BAPRE — totalizando R$ 65.000,00.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Descrição</th><th>Categoria</th><th style="text-align:right">Valor (R$)</th><th style="text-align:right">% do total</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Alimentação comunitária</strong> — coffee breaks (3 dias), refeições simples para comunidades tradicionais e estudantes, restaurantes populares e associações comunitárias.</td><td class="cat"><span class="cat-alimentacao">Alimentação</span></td><td class="num">23.000,00</td><td class="num">35,4%</td></tr>
+        <tr><td>2</td><td><strong>Kits de participação e inclusão</strong> — camisetas, crachás, sacolas ecológicas, folders, cartilhas, resumo da Carta do Pantanal.</td><td class="cat"><span class="cat-kits">Kits</span></td><td class="num">15.000,00</td><td class="num">23,1%</td></tr>
+        <tr><td>3</td><td><strong>Alojamento e acolhimento comunitário</strong> — hospedagem solidária e convênios locais para grupos de municípios distantes.</td><td class="cat"><span class="cat-hospedagem">Hospedagem</span></td><td class="num">12.000,00</td><td class="num">18,5%</td></tr>
+        <tr><td>4</td><td><strong>Deslocamento de grupos sociais</strong> — transporte terrestre de comunidades indígenas, quilombolas, pescadores, agricultores; combustível e fretamento de ônibus/vans.</td><td class="cat"><span class="cat-passagens">Deslocamento</span></td><td class="num">10.000,00</td><td class="num">15,4%</td></tr>
+        <tr><td>5</td><td><strong>Comunicação e mobilização</strong> — materiais gráficos e digitais, rádios comunitárias, carros de som, mídias sociais locais.</td><td class="cat"><span class="cat-comunicacao">Comunicação</span></td><td class="num">5.000,00</td><td class="num">7,7%</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="3" style="text-align:right">TOTAL SOLICITADO AO MPE:</td><td class="num" style="color:var(--mpe)">R$ 65.000,00</td><td></td></tr></tfoot>
+    </table>
+  </div>
+
+  <div class="alert mpe" style="margin-top:16px">
+    <span class="alert-icon">💜</span>
+    <div><strong>Regra MPE/BAPRE:</strong> Recurso do Ministério Público Estadual via Banco de Projetos e Entidades. Prestação de contas específica conforme Atos 897 e 959/2020-PGJ. Toda NF identificada como <strong>MPE — COP Pantanal</strong>.</div>
+  </div>
+</section>
+
+<section class="section" id="cop-gantt">
+  <h2 class="section-title"><span class="dot" style="background:var(--mpe)"></span>Cronograma · COP Pantanal</h2>
+  <p class="section-sub">3 etapas · marcos temporais principais.</p>
+
+  <div class="gantt-wrap">
+    <div class="gantt" id="ganttCOP"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Checklist de Etapas e Marcos — Marque o que já foi feito</h3>
+    <div id="checklistCOP"></div>
+  </div>
+</section>
+
+<section class="section" id="cop-projeto">
+  <h2 class="section-title"><span class="dot" style="background:var(--mpe)"></span>Informações do Projeto · COP Pantanal</h2>
+
+  <div class="card">
+    <h3>Objetivo</h3>
+    <p style="margin:6px 0 0;line-height:1.7;font-size:14px">Realizar, entre os dias <strong>10 e 12 de novembro de 2025</strong>, em Cáceres-MT, a <strong>COP Pantanal — Saberes e Ações pelo Clima</strong>, organizada pela UNEMAT e IFMT, como um grande espaço de diálogo, ciência e cultura. O evento reunirá a comunidade acadêmica e dos 22 municípios do Pantanal e seu entorno, integrando povos indígenas, quilombolas, pescadores, agricultores familiares, setor privado, gestores públicos, ONGs, juventudes ambientais e demais grupos sociais.</p>
+    <p style="margin:10px 0 0;line-height:1.7;font-size:14px">Como produto central, será construída a <strong>Carta do Pantanal</strong>, documento coletivo com compromissos e propostas para políticas públicas sustentáveis na região.</p>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h3>22 Municípios do Pantanal e Entorno</h3>
+      <p style="font-size:12px;line-height:1.7;margin-top:0">Cáceres · Poconé · Barão de Melgaço · Nossa Senhora do Livramento · Santo Antônio de Leverger · Porto Estrela · Curvelândia · Lambari d'Oeste · Rio Branco · Mirassol d'Oeste · São José dos Quatro Marcos · Reserva do Cabaçal · Salto do Céu · Araputanga · Indiavaí · Jauru · Vila Bela da Santíssima Trindade · Porto Esperidião · Pontes e Lacerda · Conquista d'Oeste · Campos de Júlio · Tangará da Serra</p>
+    </div>
+    <div class="card">
+      <h3>Público-alvo</h3>
+      <ul class="obj-list">
+        <li><div class="obj-num">🏛️</div><div>Comunidade acadêmica UNEMAT + IFMT</div></li>
+        <li><div class="obj-num">🪶</div><div>Povos indígenas e comunidades quilombolas</div></li>
+        <li><div class="obj-num">🎣</div><div>Pescadores profissionais/artesanais, ribeirinhos</div></li>
+        <li><div class="obj-num">🌾</div><div>Agricultores familiares, pecuaristas</div></li>
+        <li><div class="obj-num">🏢</div><div>Setor privado, gestores, ONGs, coletivos</div></li>
+        <li><div class="obj-num">♻️</div><div>Associações de catadores, juventudes ambientais</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Resultados Esperados (marque o progresso)</h3>
+    <div id="resultadosCOP"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Responsável pela Gestão</h3>
+    <p style="margin:4px 0 0"><strong>Prof. Dr. Ernandes Sobreira Oliveira Junior</strong> — Coordenação Geral COP Pantanal<br>
+    <span style="color:var(--muted);font-size:13px">UNEMAT · ernandes@unemat.br · (65) 99932-3724</span></p>
+  </div>
+</section>
+
+<section class="section" id="cop-documentos">
+  <h2 class="section-title"><span class="dot" style="background:var(--mpe)"></span>Documentos · COP Pantanal</h2>
+
+  <div class="doc-grid">
+    <a class="doc-card" href="documentos/Projeto_COP_Pantanal_BAPRE.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Termo de Abertura — COP Pantanal BAPRE</h4><p>Projeto completo enviado ao MPE</p><span class="doc-tag mpe">MPE/BAPRE</span></div></a>
+    <a class="doc-card" href="documentos/Projeto_COP_Pantanal_assinado.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Projeto COP Pantanal — Assinado (Claumir)</h4><p>Versão assinada</p><span class="doc-tag mpe">MPE/BAPRE</span></div></a>
+    <a class="doc-card" href="documentos/Oficio_MP_BAPRE_assinado.pdf" target="_blank"><div class="doc-icon pdf">PDF</div><div class="doc-content"><h4>Ofício MP BAPRE (assinado)</h4><p>Ofício oficial ao Ministério Público</p><span class="doc-tag mpe">MPE/BAPRE</span></div></a>
+  </div>
+</section>
+
+</div>
+
+</main>
+
+<footer>
+  Plataforma de Gestão — Projetos UNEMAT · Ernandes S. Oliveira Jr. · Atualizado em <span id="anoNow"></span>
+</footer>
 
 <script>
 /* ============================================================
-   AUTH — mude a senha aqui
-   ============================================================ */
-const SENHA = "TransformaAcoes2025!";
-const SESSION_KEY = "ta_auth";
+   DADOS — TRANSFORMA-AÇÕES
+============================================================ */
 
-function doLogin(){
-  const v = document.getElementById('pwdInput').value;
-  const e = document.getElementById('loginErr');
-  if(v === SENHA){
-    sessionStorage.setItem(SESSION_KEY, "1");
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    initApp();
-  } else {
-    e.textContent = "Senha incorreta. Tente novamente.";
-    document.getElementById('pwdInput').value = '';
-    document.getElementById('pwdInput').focus();
-  }
-}
+// CAPES: 6 rubricas (R$ 239.700,00)
+const itensCapes = [
+  {i:1, d:"Material de consumo",                q:1, u:61410.00, c:"consumo",    nat:"custeio", fonte:"capes"},
+  {i:2, d:"Serviços terceirizados",             q:1, u:29890.00, c:"servicos",   nat:"custeio", fonte:"capes"},
+  {i:3, d:"Diárias e passagens",                q:1, u:70400.00, c:"diarias",    nat:"custeio", fonte:"capes"},
+  {i:4, d:"Alimentação",                        q:1, u:15000.00, c:"alimentacao",nat:"custeio", fonte:"capes"},
+  {i:5, d:"Locação de equipamentos",            q:0, u:0,        c:"outros",     nat:"custeio", fonte:"capes"},
+  {i:6, d:"Custos de comunicação e divulgação", q:1, u:63000.00, c:"comunicacao",nat:"custeio", fonte:"capes"},
+];
 
-if(sessionStorage.getItem(SESSION_KEY)==="1"){
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('app').style.display='block';
-}
+// FAPEMAT — Materiais de Consumo (28 itens · R$ 91.063,50)
+const fapematConsumo = [
+  {d:"Tintas",                                q:50,   u:30.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
+  {d:"Pincéis diversos",                      q:50,   u:25.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
+  {d:"Paletas plásticas",                     q:20,   u:15.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
+  {d:"Aventais reutilizáveis",                q:30,   u:20.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
+  {d:"Copos biodegradáveis",                  q:1000, u:2.50,    c:"consumo",    nat:"custeio", fonte:"fapemat"},
+  {d:"Lápis de cor",                          q:50,   u:20.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Cola branca",                           q:10,   u:10.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Tesouras",                              q:10,   u:15.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Fita crepe",                            q:10,   u:15.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Tela para pintura",                     q:100,  u:55.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
+  {d:"Barbante",                              q:5,    u:20.00,   c:"consumo",    nat:"custeio", fonte:"fapemat"},
+  {d:"Saco de lixo",                          q:20,   u:15.50,   c:"limpeza",    nat:"custeio", fonte:"fapemat"},
+  {d:"Tecido para pinturas",                  q:100,  u:20.00,   c:"pintura",    nat:"custeio", fonte:"fapemat"},
+  {d:"Papel cartão",                          q:100,  u:2.50,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Papel higiênico",                       q:10,   u:8.00,    c:"limpeza",    nat:"custeio", fonte:"fapemat"},
+  {d:"Borracha",                              q:20,   u:2.50,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Grampeador Pneumático",                 q:1,    u:350.00,  c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Grampo p/ grampeador pneumático",       q:5,    u:50.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Fita métrica",                          q:10,   u:6.00,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Réguas",                                q:50,   u:3.50,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Extensões e filtros de linha",          q:10,   u:35.00,   c:"consumo",    nat:"custeio", fonte:"fapemat"},
+  {d:"Lápis",                                 q:20,   u:1.75,    c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Marcador de quadro branco",             q:30,   u:15.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Sabão líquido",                         q:5,    u:20.80,   c:"limpeza",    nat:"custeio", fonte:"fapemat"},
+  {d:"Caneta",                                q:1,    u:149.50,  c:"escritorio", nat:"custeio", fonte:"fapemat"},
+  {d:"Material de consumo (reserva)",         q:1,    u:64800.00,c:"consumo",    nat:"custeio", fonte:"fapemat"},
+  {d:"Combustível",                           q:1000, u:6.50,    c:"combustivel",nat:"custeio", fonte:"fapemat"},
+  {d:"Resmas",                                q:50,   u:40.00,   c:"escritorio", nat:"custeio", fonte:"fapemat"},
+];
 
-/* ============================================================
-   CONSTANTS & HELPERS
-   ============================================================ */
-const GANTT_S = new Date("2024-03-01");
-const GANTT_E = new Date("2027-12-31");
-const GANTT_DAYS = (GANTT_E - GANTT_S) / 86400000;
-const gL = d => Math.max(0, Math.min(100, ((new Date(d)-GANTT_S)/86400000/GANTT_DAYS)*100));
-const gW = (s,e) => Math.max(0.5, Math.min(100-gL(s), ((new Date(e)-new Date(s))/86400000/GANTT_DAYS)*100));
-const fBRL = n => (+n||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-const SRC_COLOR = {CAPES:"#2563EB",UNEMAT:"#059669",FAPEMAT:"#DB2777"};
-let _id = 300;
-const uid = () => ++_id;
-const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const el = id => document.getElementById(id);
+// FAPEMAT — Diárias (12 itens · R$ 51.936,50)
+const fapematDiarias = [
+  {d:"Diárias · Tangará da Serra/MT (15× R$302,50) — mês 18",  q:15, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Nova Xavantina/MT (15× R$302,50) — mês 1",     q:15, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · São Paulo/SP (11× R$581,00) — mês 12",         q:11, u:581.00, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Cuiabá/MT (20× R$302,50) — mês 22",            q:20, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Cuiabá/MT (20× R$302,50) — mês 1",             q:20, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Sinop/MT (11× R$302,50) — mês 1",              q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Brasília/DF (5,5× R$581,00) — mês 3",          q:5.5, u:581.00, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Tangará da Serra/MT (11× R$302,50) — mês 4",   q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Nova Xavantina/MT (11× R$302,50) — mês 5",     q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Barra do Bugres/MT (11× R$302,50) — mês 6",    q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Cuiabá/MT (15× R$302,50) — mês 15",            q:15, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+  {d:"Diárias · Sinop/MT (11× R$302,50) — mês 17",             q:11, u:302.50, c:"diarias", nat:"custeio", fonte:"fapemat"},
+];
 
-/* ============================================================
-   INITIAL DATA
-   ============================================================ */
-const OBJ_U_DEFAULT = [
-  {id:1,text:"Ação 1: Realização de Feiras Públicas de Extensão nos Municípios Polos (Cáceres, Sinop, Alta Floresta, Barra do Bugres, Tangará da Serra e Nova Xavantina)",periodo:"09/06/2025–08/06/2026",done:false},
-  {id:2,text:"Ação 2: Oferta de Oficinas Temáticas Baseadas nos 12 Programas de Pós-Graduação da UNEMAT",periodo:"09/06/2025–08/06/2026",done:false},
-  {id:3,text:"Ação 3: Mobilizações Temáticas em Alinhamento à COP30 com foco nos biomas Pantanal, Cerrado e Amazônia",periodo:"01/10/2025–01/12/2025",done:false},
-  {id:4,text:"Ação 4: Formação e Participação de Estudantes de Graduação e Pós-Graduação como bolsistas creditantes",periodo:"09/06/2025–08/06/2026",done:false},
-  {id:5,text:"Ação 5: Sistematização, Avaliação e Divulgação dos Resultados do Projeto",periodo:"09/06/2025–08/06/2026",done:false},
-  {id:6,text:"Ação 6: Estimular os cursos de pós-graduação na emancipação da extensão universitária",periodo:"09/06/2025–08/06/2026",done:false},
+// FAPEMAT — Passagens (2 itens · R$ 6.500,00)
+const fapematPassagens = [
+  {d:"Passagem aérea · Cuiabá ↔ Brasília (2×)",  q:2, u:1750.00, c:"passagens", nat:"custeio", fonte:"fapemat"},
+  {d:"Passagem aérea · Cuiabá ↔ São Paulo (2×)", q:2, u:1500.00, c:"passagens", nat:"custeio", fonte:"fapemat"},
 ];
-const OBJ_C_DEFAULT = [
-  {id:1,text:"Potencializar os PPGs para efetiva atuação no desenvolvimento de ações junto à sociedade civil",done:false},
-  {id:2,text:"Estimular a colaboração entre as 4 áreas temáticas (Meio Ambiente; Tecnologias; Ensino e Linguagens; Indígena) por meio de seminários, workshops e projetos interdisciplinares",done:false},
-  {id:3,text:"Estimular a solidariedade entre os PPGs da UNEMAT através de ações conjuntas para atender às necessidades da sociedade civil",done:false},
-  {id:4,text:"Integrar os diferentes atores sociais para ofertarem cursos, minicursos, oficinas, palestras e rodas de conversa fomentando a visibilidade de populações vulneráveis",done:false},
-  {id:5,text:"Disseminar os resultados e boas práticas por meio de eventos, feiras de integração e publicações de livros, cartilhas e vídeos",done:false},
-  {id:6,text:"Estimular, através do conhecimento da pós-graduação, a criação de empresas júnior, cooperativas, aplicativos, softwares e similares para auxiliar a sociedade",done:false},
-  {id:7,text:"Realizar disciplinas conjuntas das 04 áreas do conhecimento do projeto para o fomento à extensão",done:false},
-  {id:8,text:"[Meio Ambiente] Subsidiar a integração do conhecimento tradicional botânico com o SUS para aproveitamento medicinal por comunidades vulneráveis",done:false},
-  {id:9,text:"[Meio Ambiente] Congregar ações interfronteiriças entre Ciências Ambientais e Geografia com a Bolívia",done:false},
-  {id:10,text:"[Meio Ambiente] Promoção de eventos de saúde em populações tradicionais e em situação de vulnerabilidade",done:false},
-  {id:11,text:"[Tecnologias] Fomentar a visibilidade do programa MT Horticultura",done:false},
-  {id:12,text:"[Tecnologias] Integrar a universidade com empresas privadas para parcerias que envolvam melhoramento genético",done:false},
-  {id:13,text:"[Ensino e Linguagens] Fomentar a criação de grupo interdisciplinar de debate sobre questões étnico-raciais e de gênero",done:false},
-  {id:14,text:"[Ensino e Linguagens] Fomentar a formação de curso de línguas para imigrantes da pós-graduação com possibilidade de expansão para a comunidade",done:false},
-  {id:15,text:"[Ensino e Linguagens] Criar espaço de discussão de metodologias narrativas contemplando processos de ensino-aprendizagem de línguas com a sociedade civil",done:false},
-  {id:16,text:"[Indígena] Criar ferramentas tecnológicas que subsidiem ações educativas e de gestão da comunidade indígena",done:false},
-  {id:17,text:"[Indígena] Fortalecer e difundir a cultura indígena através da confecção e disponibilização de material em diferentes línguas",done:false},
+
+// FAPEMAT — Serviços de Terceiros (5 itens · R$ 69.000,00)
+const fapematServicos = [
+  {d:"Diagramação editorial",     q:1, u:10000.00, c:"servicos", nat:"custeio", fonte:"fapemat"},
+  {d:"Edição de materiais",       q:1, u:10000.00, c:"servicos", nat:"custeio", fonte:"fapemat"},
+  {d:"Produção de materiais",     q:1, u:20000.00, c:"servicos", nat:"custeio", fonte:"fapemat"},
+  {d:"Auxiliar de campo",         q:1, u:7000.00,  c:"servicos", nat:"custeio", fonte:"fapemat"},
+  {d:"Impressão de materiais",    q:1, u:22000.00, c:"servicos", nat:"custeio", fonte:"fapemat"},
 ];
-const OBJ_F_DEFAULT = [
-  {id:"A-1",text:"A-1: Identificação do potencial dos PPGs para atividades de extensão junto à sociedade civil",meses:"1–6",done:false},
-  {id:"A-2",text:"A-2: Identificação e Integração de parceiros (atores sociais) que possam auxiliar na solução de desafios encontrados nas quatro áreas",meses:"1–12",done:false},
-  {id:"A-3",text:"A-3: Integração da comunidade acadêmica com populações vulneráveis em ações extensionistas para possibilitar a visibilidade destas",meses:"1–24",done:false},
-  {id:"A-4",text:"A-4: Produção de material de divulgação dos projetos para a sociedade acadêmica e não acadêmica",meses:"1–24",done:false},
-  {id:"A-5",text:"A-5: Apoio à elaboração de cursos para a sociedade nas quatro áreas do conhecimento abordadas",meses:"1–24",done:false},
-  {id:"A-6",text:"A-6: Integralização da cultura indígena na sociedade civil através de amostras e oficinas em via de mão dupla (dos indígenas para a academia e vice-versa)",meses:"1–24",done:false},
-  {id:"A-7",text:"A-7: Apoio à execução de projetos de extensão interdisciplinares com as quatro áreas do saber",meses:"6–18",done:false},
-  {id:"A-8",text:"A-8: Criação de empresa, cooperativa, associação e/ou grupo voltado para a melhoria da qualidade de vida e sustentabilidade",meses:"12–24",done:false},
+
+// FAPEMAT — Material Permanente (4 itens · R$ 21.200,00)
+const fapematPermanente = [
+  {d:"Samsung Galaxy Book4 Notebook",                    q:2, u:5000.00, c:"permanente", nat:"permanente", fonte:"fapemat"},
+  {d:"Desktop Dell 24' All-in-One Intel Core 13ª geração", q:1, u:7000.00, c:"permanente", nat:"permanente", fonte:"fapemat"},
+  {d:"Aparelho de som Frahm CMF 670 (kit microfone+tripé)", q:1, u:3000.00, c:"permanente", nat:"permanente", fonte:"fapemat"},
+  {d:"Caixa ativa 12\" com microfone",                    q:1, u:1200.00, c:"permanente", nat:"permanente", fonte:"fapemat"},
 ];
-const GANTT_DEFAULT = [
-  {id:1,label:"SIGAA PJ060-2024 — 1ª Edição (UNEMAT)",source:"UNEMAT",color:"#059669",startDate:"2024-03-17",endDate:"2025-03-16",done:true},
-  {id:2,label:"Bolsistas IE e Pós-Doutorado — PROEXT-PG (CAPES)",source:"CAPES",color:"#2563EB",startDate:"2025-02-01",endDate:"2027-11-30",done:false},
-  {id:3,label:"SIGAA PJ241-2025 — 2ª Edição (UNEMAT)",source:"UNEMAT",color:"#059669",startDate:"2025-06-09",endDate:"2026-06-08",done:false},
-  {id:4,label:"A-1: Identificação dos PPGs (FAPEMAT)",source:"FAPEMAT",color:"#DB2777",startDate:"2025-11-01",endDate:"2026-04-30",done:false},
-  {id:5,label:"A-2: Integração de parceiros (FAPEMAT)",source:"FAPEMAT",color:"#DB2777",startDate:"2025-11-01",endDate:"2026-10-31",done:false},
-  {id:6,label:"A-3 a A-6: Ações contínuas (FAPEMAT)",source:"FAPEMAT",color:"#DB2777",startDate:"2025-11-01",endDate:"2027-10-31",done:false},
-  {id:7,label:"A-7: Projetos interdisciplinares (FAPEMAT)",source:"FAPEMAT",color:"#7C3AED",startDate:"2026-05-01",endDate:"2027-04-30",done:false},
-  {id:8,label:"A-8: Criação de empresa/cooperativa (FAPEMAT)",source:"FAPEMAT",color:"#7C3AED",startDate:"2026-11-01",endDate:"2027-10-31",done:false},
+
+// Junta tudo FAPEMAT com índice sequencial
+const itensFapemat = [...fapematConsumo, ...fapematDiarias, ...fapematPassagens, ...fapematServicos, ...fapematPermanente]
+  .map((it, idx) => ({...it, i: idx+1}));
+
+/* Atividades FAPEMAT (cronograma oficial pág. 5-7 do Plano de Trabalho) */
+const atividadesTA = [
+  {id:"A1", nome:"Identificação do potencial dos PPGs para atividades de extensão", start:1,  dur:6,  resp:"Ernandes", chs:20},
+  {id:"A2", nome:"Identificação e integração de parceiros (atores sociais) nas 4 áreas", start:1, dur:12, resp:"Ernandes", chs:10},
+  {id:"A3", nome:"Integração da comunidade acadêmica com populações vulneráveis", start:1, dur:24, resp:"Ernandes", chs:4},
+  {id:"A4", nome:"Produção de material de divulgação (acadêmico e não-acadêmico)", start:1, dur:24, resp:"Ernandes", chs:8},
+  {id:"A5", nome:"Apoio à elaboração de cursos para a sociedade nas 4 áreas", start:1, dur:24, resp:"Ernandes", chs:10},
+  {id:"A6", nome:"Integralização da cultura indígena (mão dupla academia-indígenas)", start:1, dur:24, resp:"Ernandes", chs:4},
+  {id:"A7", nome:"Apoio a projetos de extensão interdisciplinares (4 áreas)", start:6, dur:12, resp:"Ernandes", chs:20},
+  {id:"A8", nome:"Criação de empresa/cooperativa/associação p/ sociedade", start:12, dur:12, resp:"Ernandes", chs:20},
 ];
-const BC_DEFAULT = [
-  {id:1,item:"Diárias",aprovado:81810,executado:0},
-  {id:2,item:"Equipamentos para a comunicação",aprovado:60000,executado:0},
-  {id:3,item:"Publicação de material para distribuição (redes sociais, livretos, cartilhas, folders, placas PVC)",aprovado:48000,executado:0},
-  {id:4,item:"Despesa pessoa física",aprovado:10000,executado:0},
-  {id:5,item:"Despesa pessoa jurídica",aprovado:9890,executado:0},
-  {id:6,item:"Despesa de custeio",aprovado:30000,executado:0},
-];
-const BF_DEFAULT = [
-  {id:1,item:"Diárias (Cuiabá, Sinop, Tangará da Serra, Nova Xavantina, Brasília, São Paulo)",aprovado:51936.50,executado:0},
-  {id:2,item:"Material de Consumo (tintas, pincéis, combustível, resmas, materiais pedagógicos etc.)",aprovado:26263.50,executado:0},
-  {id:3,item:"Bolsas via FAPEMAT (AT-2: 2×8 meses×R$3.000 + IC: 2×12 meses×R$700)",aprovado:64800,executado:0},
-  {id:4,item:"Passagens aéreas (Cuiabá–Brasília + Cuiabá–São Paulo)",aprovado:6500,executado:0},
-  {id:5,item:"Serviços de Terceiros — Pessoa Física (auxiliar de campo etc.)",aprovado:27000,executado:0},
-  {id:6,item:"Serviços de Terceiros — Pessoa Jurídica (diagramação, edição, produção, impressão)",aprovado:42000,executado:0},
-  {id:7,item:"Equipamentos e Material Permanente (2 notebooks Samsung + 1 desktop Dell + aparelho de som)",aprovado:21200,executado:0},
-];
-const TEAM_DEFAULT = [
-  {id:1,nome:"Ernandes Sobreira Oliveira Junior",funcao:"Coordenador",instituicao:"UNEMAT/PPGCA",tipo:"coordenador",bolsa:false,fonte:"—",email:"ernandes@unemat.br",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:2,nome:"Danielle Tavares Teixeira",funcao:"Pesquisadora / Pós-Doutoranda — Think Centre",instituicao:"UNEMAT",tipo:"posdoc",bolsa:true,fonte:"CAPES/FAPEMAT",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:3,nome:"Keitty Macuchapi dos Santos",funcao:"Bolsista de Iniciação à Extensão (IE)",instituicao:"UNEMAT — Medicina 5º sem. (CRA 9.3453)",tipo:"bolsista_ie",bolsa:true,fonte:"CAPES",email:"keitty.macuchapi@unemat.br",inicio:"20/07/2025",fim:"30/11/2027"},
-  {id:4,nome:"Cintya [sobrenome a confirmar]",funcao:"Bolsista de Iniciação à Extensão (IE)",instituicao:"UNEMAT",tipo:"bolsista_ie",bolsa:true,fonte:"FAPEMAT",email:"—",inicio:"2025",fim:"2027"},
-  {id:5,nome:"Wilkinson Lopes Lazaro",funcao:"Colaborador",instituicao:"UNEMAT/PPGCA",tipo:"membro",bolsa:false,fonte:"—",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:6,nome:"Sandra Mara Alves da Silva Neves",funcao:"Colaboradora",instituicao:"UNEMAT/PPGEO",tipo:"membro",bolsa:false,fonte:"—",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:7,nome:"Leila Nalis Paiva da Silva Andrade",funcao:"Colaboradora",instituicao:"UNEMAT",tipo:"membro",bolsa:false,fonte:"—",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:8,nome:"Adriano Marcos Romano",funcao:"Colaborador / Executor",instituicao:"UNEMAT/Bionorte",tipo:"membro",bolsa:false,fonte:"—",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:9,nome:"Beatriz Ferraz Bühler",funcao:"Colaboradora / Executora",instituicao:"SEDUC-MT",tipo:"externo",bolsa:false,fonte:"—",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:10,nome:"Renato Fonseca de Arruda",funcao:"Colaborador / Executor",instituicao:"UNEMAT/FACH",tipo:"membro",bolsa:false,fonte:"—",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:11,nome:"Jonathan Anderson de Paula Caldas",funcao:"Colaborador / Executor",instituicao:"UNEMAT/PRPPG",tipo:"membro",bolsa:false,fonte:"—",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:12,nome:"Aurea Regina Alves Ignacio",funcao:"Articuladora",instituicao:"UNEMAT/PRPPG",tipo:"membro",bolsa:false,fonte:"—",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:13,nome:"Everton Ricardo do Nascimento",funcao:"Articulador",instituicao:"UNEMAT/PROEC",tipo:"membro",bolsa:false,fonte:"—",email:"—",inicio:"01/02/2025",fim:"30/11/2027"},
-  {id:14,nome:"Claumir Cesar Muniz",funcao:"Colaborador",instituicao:"UNEMAT/PPGCA",tipo:"membro",bolsa:false,fonte:"—",email:"—",inicio:"09/06/2025",fim:"08/06/2026"},
-];
-const DOCS_DEFAULT = [
-  {id:1,nome:"Formulário de Submissão CAPES PROEXT-PG",tipo:"CAPES",arquivo:"projeto_extensao_-_capes_-_final.pdf",descricao:"Proposta aprovada PROEXT-PG Edital 03/2024. Orçamento R$239.700, equipe e objetivos por área."},
-  {id:2,nome:"SIGAA PJ060-2024 — 1ª Edição UNEMAT",tipo:"UNEMAT",arquivo:"PROJETO_TRANSFORMA-AÇÕES_-_ERNANDES_SOBREIRA.pdf",descricao:"Registro SIGAA da 1ª edição, período 17/03/2024–16/03/2025. Nota 9.8. Portaria nº 472/2024-PROEC."},
-  {id:3,nome:"Plano de Trabalho Bolsistas IE e Pós-Doutorado",tipo:"CAPES",arquivo:"Plano_de_Trabalho_dos_bolsistas_de_IE_e_PD_assinado_por_todos.pdf",descricao:"Planos detalhados IE e pós-doutorado (01/02/2025–30/11/2027). Assinado por todos os pró-reitores."},
-  {id:4,nome:"Orçamento FAPEMAT Aprovado",tipo:"FAPEMAT",arquivo:"Projeto-Ernandes_Sobreira_Oliveira_Junior_-_ORÇAMENTO.pdf",descricao:"Orçamento aprovado pela FAPEMAT: R$239.700. Tabelas por elemento de despesa."},
-  {id:5,nome:"Proposta Completa FAPEMAT",tipo:"FAPEMAT",arquivo:"Projeto-Ernandes_Sobreira_Oliveira_Junior.pdf",descricao:"Proposta FAPEMAT — Edital Contrapartida CAPES 03/2024. Vigência 01/11/2025–31/10/2027 (24 meses)."},
-  {id:6,nome:"SIGAA PJ241-2025 — 2ª Edição UNEMAT",tipo:"UNEMAT",arquivo:"PROJETO_EXTENSÃO_UNEMAT-TRANSFORMA-AÇÕES.pdf",descricao:"Registro SIGAA da 2ª edição (09/06/2025–08/06/2026). Situação: Em Execução. 6 municípios polos."},
-  {id:7,nome:"Ficha de Inscrição — Keitty Macuchapi dos Santos (IE CAPES)",tipo:"Bolsista",arquivo:"keitty_-_IE.pdf",descricao:"Edital 021/2025, carta de motivação, histórico escolar (CRA 9.3453, Medicina UNEMAT) e Lattes."},
+
+/* Objetivos específicos Transforma-Ações */
+const objetivosTA = [
+  "Potencializar os PPGs para atuação junto à sociedade civil",
+  "Estimular colaboração entre as 4 áreas temáticas (seminários, workshops, projetos)",
+  "Estimular solidariedade entre PPGs da UNEMAT",
+  "Integrar atores sociais das 4 áreas (cursos, oficinas, palestras, rodas de conversa)",
+  "Disseminar resultados (eventos, livros, cartilhas, vídeos)",
+  "Estimular criação de empresas júnior, cooperativas, apps, softwares",
+  "Desenvolver componentes curriculares conjuntos nas 4 áreas",
 ];
 
 /* ============================================================
-   STATE — localStorage
-   ============================================================ */
-const LS = key => {
-  const load = () => { try { return JSON.parse(localStorage.getItem('ta_'+key)); } catch(e){ return null; } };
-  const save = v => localStorage.setItem('ta_'+key, JSON.stringify(v));
-  return {load, save};
+   DADOS — COP PANTANAL
+============================================================ */
+
+const itensCOP = [
+  {i:1, d:"Alimentação comunitária",           u:23000, c:"alimentacao"},
+  {i:2, d:"Kits de participação e inclusão",   u:15000, c:"kits"},
+  {i:3, d:"Alojamento e acolhimento comunitário", u:12000, c:"hospedagem"},
+  {i:4, d:"Deslocamento de grupos sociais",    u:10000, c:"passagens"},
+  {i:5, d:"Comunicação e mobilização",         u:5000,  c:"comunicacao"},
+];
+
+/* Etapas COP (cronograma oficial pág. 4-5 do TAP) */
+const etapasCOP = [
+  {id:"E1", nome:"Etapa Preparatória",    start:"2025-08-01", end:"2025-10-31", color:"mpe"},
+  {id:"E2", nome:"Execução do Evento (3 dias)", start:"2025-11-10", end:"2025-11-12", color:"mpe"},
+  {id:"E3", nome:"Etapa Pós-Evento",      start:"2025-11-13", end:"2025-12-31", color:"mpe"},
+];
+
+/* Marcos (checkboxes) da COP Pantanal */
+const marcosCOP = [
+  {g:"Etapa Preparatória (ago-out/2025)", items:[
+    "Mobilização das coordenações de PPGs da UNEMAT e IFMT",
+    "Envio de ofícios aos municípios do Pantanal e entorno",
+    "Articulação com movimentos sociais, associações, setor privado",
+    "Definição de oficinas, mostras e atividades culturais",
+    "Estruturação das 12 tendas temáticas",
+    "Divulgação em escolas, universidades, mídias e redes sociais",
+    "Recebimento de inscrições (Hacka do Clima, Pitch)",
+  ]},
+  {g:"Execução (10-12/nov/2025)", items:[
+    "Dia 10/11 — Cerimônia de abertura e palestra magna",
+    "Dia 10/11 — Atividades culturais e oficinas de abertura",
+    "Dia 11/11 — Oficinas simultâneas (matutino/vespertino)",
+    "Dia 11/11 — Sessões de debates com atores sociais",
+    "Dia 11/11 — Mostra de projetos científicos, tecnológicos, culturais",
+    "Dia 12/11 — Oficinas finais nas tendas temáticas",
+    "Dia 12/11 — Plenária de sistematização das propostas",
+    "Dia 12/11 — Construção coletiva da Carta do Pantanal",
+    "Dia 12/11 — Leitura pública da Carta e encerramento",
+  ]},
+  {g:"Pós-Evento (nov-dez/2025)", items:[
+    "Sistematização dos relatórios de oficinas, mostras e pitchs",
+    "Publicação e divulgação da Carta do Pantanal (digital + impresso)",
+    "Envio de relatório final ao MPE e instituições parceiras",
+    "Articulação de agendas futuras a partir das propostas",
+  ]},
+];
+
+/* Resultados esperados COP */
+const resultadosCOP = [
+  "Mobilização regional de mais de 5.000 pessoas",
+  "Integração de saberes científicos e tradicionais",
+  "Produção da Carta do Pantanal",
+  "Ampliação da participação comunitária (indígenas, quilombolas, ribeirinhos)",
+  "Realização de 30 oficinas, mostras e atividades culturais",
+  "Fomento à inovação via Pitch de Desafios e Soluções",
+  "Fortalecimento da UNEMAT e IFMT como polos de referência climática",
+];
+
+const catLabels = {
+  combustivel:"Combustível", pintura:"Pintura", escritorio:"Escritório",
+  limpeza:"Limpeza", consumo:"Consumo Geral", servicos:"Serv. Terceirizados",
+  diarias:"Diárias", passagens:"Passagens",
+  alimentacao:"Alimentação", comunicacao:"Comunicação",
+  permanente:"Mat. Permanente", kits:"Kits", hospedagem:"Hospedagem", outros:"Outros"
+};
+const catsPorFonte = {
+  capes:   ["consumo","servicos","diarias","alimentacao","comunicacao","outros"],
+  fapemat: ["consumo","combustivel","pintura","escritorio","limpeza","diarias","passagens","servicos","permanente"],
+  todos:   Object.keys(catLabels)
 };
 
-let STATE = {};
+/* ============================================================
+   ESTADO / STORAGE
+============================================================ */
+
+const STORAGE_KEY = "transformacoes_v3";
 function loadState(){
-  const defs = {objU:OBJ_U_DEFAULT,objC:OBJ_C_DEFAULT,objF:OBJ_F_DEFAULT,gantt:GANTT_DEFAULT,bCapes:BC_DEFAULT,bFapemat:BF_DEFAULT,team:TEAM_DEFAULT,docs:DOCS_DEFAULT,tab:'dashboard',teamFilter:'todos',docFilter:'todos'};
-  for(const k in defs) STATE[k] = LS(k).load() ?? JSON.parse(JSON.stringify(defs[k]));
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e){ return {}; }
 }
-function save(key){ LS(key).save(STATE[key]); }
+function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+let state = loadState();
+state.objetivosTA = state.objetivosTA || {};
+state.atividadesTA = state.atividadesTA || {};
+state.marcosCOP = state.marcosCOP || {};
+state.resultadosCOP = state.resultadosCOP || {};
+
+let fonteAtual = "capes";
+let projAtual = "ta";
+
+const fmt = v => v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 
 /* ============================================================
-   TIPO CONFIG
-   ============================================================ */
-const TIPO_CFG = {
-  coordenador:{bg:"#FEF9C3",c:"#92400E",label:"Coordenador",ac:"#92400E"},
-  posdoc:{bg:"#F5F3FF",c:"#7C3AED",label:"Pós-Doutorado",ac:"#7C3AED"},
-  bolsista_ie:{bg:"#EFF6FF",c:"#2563EB",label:"Bolsista IE",ac:"#2563EB"},
-  membro:{bg:"#F3F4F6",c:"#374151",label:"Membro",ac:"#6B7280"},
-  externo:{bg:"#F0FDF4",c:"#059669",label:"Externo",ac:"#059669"},
-};
-const DOC_CFG = {
-  CAPES:{c:"#2563EB",bg:"#EFF6FF"},
-  UNEMAT:{c:"#059669",bg:"#ECFDF5"},
-  FAPEMAT:{c:"#DB2777",bg:"#FDF2F8"},
-  Bolsista:{c:"#7C3AED",bg:"#F5F3FF"},
-};
+   NAV / TABS por projeto
+============================================================ */
+
+const tabsTA = [
+  {id:"ta-dashboard", label:"📊 Dashboard"},
+  {id:"ta-itens", label:"🛒 Itens de Compra"},
+  {id:"ta-capes", label:"🔵 CAPES"},
+  {id:"ta-fapemat", label:"🟢 FAPEMAT"},
+  {id:"ta-gantt", label:"📅 Cronograma / Gantt"},
+  {id:"ta-equipe", label:"👥 Equipe"},
+  {id:"ta-projeto", label:"📋 Projeto"},
+  {id:"ta-documentos", label:"📁 Documentos"},
+];
+const tabsCOP = [
+  {id:"cop-dashboard", label:"📊 Dashboard"},
+  {id:"cop-itens", label:"🛒 Itens de Custo"},
+  {id:"cop-gantt", label:"📅 Cronograma"},
+  {id:"cop-projeto", label:"📋 Projeto"},
+  {id:"cop-documentos", label:"📁 Documentos"},
+];
+
+function renderTabs(){
+  const nav = document.getElementById("navTabs");
+  const tabs = projAtual === "ta" ? tabsTA : tabsCOP;
+  nav.innerHTML = tabs.map((t,idx) => `<button class="tab-btn ${idx===0?'active':''}" data-tab="${t.id}">${t.label}</button>`).join("");
+  document.querySelectorAll("#navTabs .tab-btn").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      document.querySelectorAll("#navTabs .tab-btn").forEach(x=>x.classList.remove("active"));
+      document.querySelectorAll(`.project-content[data-proj="${projAtual}"] .section`).forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+      document.getElementById(b.dataset.tab).classList.add("active");
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+  });
+}
+
+document.querySelectorAll(".proj-pill").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".proj-pill").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    projAtual = b.dataset.proj;
+    document.querySelectorAll(".project-content").forEach(pc=>{
+      pc.style.display = pc.dataset.proj === projAtual ? "" : "none";
+    });
+    renderTabs();
+    // Primeiro tab ativo
+    const first = projAtual === "ta" ? "ta-dashboard" : "cop-dashboard";
+    document.querySelectorAll(`.project-content[data-proj="${projAtual}"] .section`).forEach(x=>x.classList.remove("active"));
+    document.getElementById(first).classList.add("active");
+  });
+});
 
 /* ============================================================
-   MODAL STATE
-   ============================================================ */
-let modalCtx = {};
+   TABELA DE ITENS TA
+============================================================ */
 
-function openModal(cfg){
-  modalCtx = cfg;
-  el('modalTitle').textContent = (cfg.mode==='add'?'Adicionar':'Editar') + ' — ' + {obj:'Objetivo',gantt:'Atividade no Cronograma',budget:'Item de Orçamento',team:'Membro da Equipe',doc:'Documento'}[cfg.type];
-  el('modalBody').innerHTML = buildModalForm(cfg);
-  el('modalOverlay').classList.add('open');
-}
-function closeModal(){ el('modalOverlay').classList.remove('open'); modalCtx={}; }
-
-function buildModalForm(cfg){
-  const d = cfg.item || {};
-  const inp = (id,val,ph='',type='text') => `<input id="mf_${id}" type="${type}" value="${esc(String(val??''))}" placeholder="${ph}" style="width:100%;border-radius:8px;border:1.5px solid #E5E7EB;padding:.55rem .8rem;font-size:.875rem;font-family:inherit;outline:none;box-sizing:border-box"/>`;
-  const sel = (id,opts,val) => `<select id="mf_${id}" style="width:100%;border-radius:8px;border:1.5px solid #E5E7EB;padding:.55rem .8rem;font-size:.875rem;font-family:inherit;outline:none;box-sizing:border-box">${opts.map(o=>`<option value="${o}" ${o==val?'selected':''}>${o}</option>`).join('')}</select>`;
-  const ta = (id,val,rows=3) => `<textarea id="mf_${id}" rows="${rows}" style="width:100%;border-radius:8px;border:1.5px solid #E5E7EB;padding:.55rem .8rem;font-size:.875rem;font-family:inherit;outline:none;box-sizing:border-box;resize:vertical">${esc(String(val??''))}</textarea>`;
-  const fg = (lbl,html) => `<div class="field-group"><label>${lbl}</label>${html}</div>`;
-  const cb = (id,checked,lbl) => `<div class="field-group"><label class="cb-label"><input type="checkbox" id="mf_${id}" ${checked?'checked':''}/>${lbl}</label></div>`;
-  const g2 = (a,b) => `<div class="grid-2cols">${a}${b}</div>`;
-
-  if(cfg.type==='obj') return [
-    fg('Texto do objetivo', ta('text',d.text,4)),
-    fg('Período', inp('periodo',d.periodo,'ex: 09/06/2025–08/06/2026')),
-    cfg.section==='fapemat' ? fg('Meses (FAPEMAT)', inp('meses',d.meses,'ex: 1–6')) : '',
-    cb('done',d.done,'Marcar como concluído'),
-  ].join('');
-
-  if(cfg.type==='gantt') return [
-    fg('Atividade / Label', inp('label',d.label)),
-    fg('Fonte', sel('source',['CAPES','UNEMAT','FAPEMAT'],d.source)),
-    g2(fg('Data de início',inp('startDate',d.startDate,'','date')), fg('Data de fim',inp('endDate',d.endDate,'','date'))),
-    cb('done',d.done,'Marcar como concluído'),
-  ].join('');
-
-  if(cfg.type==='budget') return [
-    fg('Descrição do item', ta('item',d.item,3)),
-    g2(fg('Valor Aprovado (R$)',inp('aprovado',d.aprovado,'','number')), fg('Valor Executado (R$)',inp('executado',d.executado,'','number'))),
-  ].join('');
-
-  if(cfg.type==='team') return [
-    fg('Nome completo', inp('nome',d.nome)),
-    fg('Função', inp('funcao',d.funcao)),
-    fg('Instituição', inp('instituicao',d.instituicao)),
-    g2(fg('Tipo',sel('tipo',['coordenador','posdoc','bolsista_ie','membro','externo'],d.tipo)), fg('Fonte da Bolsa',inp('fonte',d.fonte,'CAPES, FAPEMAT, —'))),
-    cb('bolsa',d.bolsa,'Possui bolsa'),
-    fg('E-mail', inp('email',d.email,'','email')),
-    g2(fg('Início',inp('inicio',d.inicio,'01/02/2025')), fg('Fim',inp('fim',d.fim,'30/11/2027'))),
-  ].join('');
-
-  if(cfg.type==='doc') return [
-    fg('Nome do documento', inp('nome',d.nome)),
-    fg('Tipo', sel('tipo',['CAPES','UNEMAT','FAPEMAT','Bolsista'],d.tipo)),
-    fg('Nome do arquivo', inp('arquivo',d.arquivo,'arquivo.pdf')),
-    fg('Descrição', ta('descricao',d.descricao,3)),
-  ].join('');
+function getItens(){
+  if(fonteAtual === "capes")   return itensCapes;
+  if(fonteAtual === "fapemat") return itensFapemat;
+  return [...itensCapes, ...itensFapemat];
 }
 
-function getField(id, isCheck=false){ const e=el('mf_'+id); if(!e)return undefined; return isCheck?e.checked:e.value; }
+function atualizarFiltroCategoria(){
+  const sel = document.getElementById("filtroCat");
+  sel.innerHTML = '<option value="">Todas</option>' +
+    catsPorFonte[fonteAtual].map(c => `<option value="${c}">${catLabels[c]}</option>`).join("");
+}
 
-function saveModal(){
-  const {type,mode,section,item} = modalCtx;
-  const isAdd = mode==='add';
-  let data = {...item, id: isAdd ? uid() : item.id};
+function atualizarCabecalho(){
+  const thead = document.getElementById("theadItens");
+  if(fonteAtual === "todos"){
+    thead.innerHTML = `<th>#</th><th>Descrição</th><th>Fonte</th><th>Natureza</th><th>Categoria</th><th style="text-align:right">Qtd</th><th style="text-align:right">Unit. (R$)</th><th style="text-align:right">Total (R$)</th>`;
+  } else {
+    thead.innerHTML = `<th>#</th><th>Descrição</th><th>Natureza</th><th>Categoria</th><th style="text-align:right">Qtd</th><th style="text-align:right">Unit. (R$)</th><th style="text-align:right">Total (R$)</th>`;
+  }
+}
 
-  if(type==='obj'){
-    data.text = getField('text');
-    data.periodo = getField('periodo');
-    if(section==='fapemat') data.meses = getField('meses');
-    data.done = getField('done',true);
-    const k = {unemat:'objU',capes:'objC',fapemat:'objF'}[section];
-    STATE[k] = isAdd ? [...STATE[k], data] : STATE[k].map(x=>x.id===data.id?data:x);
-    save(k);
-  } else if(type==='gantt'){
-    data.label = getField('label');
-    data.source = getField('source');
-    data.startDate = getField('startDate');
-    data.endDate = getField('endDate');
-    data.done = getField('done',true);
-    data.color = SRC_COLOR[data.source]||'#7C3AED';
-    STATE.gantt = isAdd ? [...STATE.gantt, data] : STATE.gantt.map(x=>x.id===data.id?data:x);
-    save('gantt');
-  } else if(type==='budget'){
-    data.item = getField('item');
-    data.aprovado = parseFloat(getField('aprovado'))||0;
-    data.executado = parseFloat(getField('executado'))||0;
-    const k = section==='capes'?'bCapes':'bFapemat';
-    STATE[k] = isAdd ? [...STATE[k], data] : STATE[k].map(x=>x.id===data.id?data:x);
-    save(k);
-  } else if(type==='team'){
-    data.nome = getField('nome');
-    data.funcao = getField('funcao');
-    data.instituicao = getField('instituicao');
-    data.tipo = getField('tipo');
-    data.fonte = getField('fonte');
-    data.bolsa = getField('bolsa',true);
-    data.email = getField('email');
-    data.inicio = getField('inicio');
-    data.fim = getField('fim');
-    STATE.team = isAdd ? [...STATE.team, data] : STATE.team.map(x=>x.id===data.id?data:x);
-    save('team');
-  } else if(type==='doc'){
-    data.nome = getField('nome');
-    data.tipo = getField('tipo');
-    data.arquivo = getField('arquivo');
-    data.descricao = getField('descricao');
-    STATE.docs = isAdd ? [...STATE.docs, data] : STATE.docs.map(x=>x.id===data.id?data:x);
-    save('docs');
+function renderTabela(){
+  const busca = document.getElementById("buscaItem").value.toLowerCase();
+  const cat = document.getElementById("filtroCat").value;
+  const nat = document.getElementById("filtroNat").value;
+  const tbody = document.getElementById("corpoItens");
+  const itens = getItens();
+  tbody.innerHTML = "";
+  let total = 0, count = 0;
+  const temFonte = fonteAtual === "todos";
+  itens.forEach((it, idx)=>{
+    const tot = it.q * it.u;
+    const matchBusca = !busca || it.d.toLowerCase().includes(busca) || String(idx+1).includes(busca);
+    const matchCat = !cat || it.c === cat;
+    const matchNat = !nat || it.nat === nat;
+    if(!matchBusca || !matchCat || !matchNat) return;
+    total += tot; count++;
+    const tr = document.createElement("tr");
+    const fonteCell = temFonte ? `<td class="fonte"><span class="fonte-${it.fonte}">${it.fonte.toUpperCase()}</span></td>` : "";
+    tr.innerHTML = `<td>${idx+1}</td><td>${it.d}</td>${fonteCell}<td class="natureza"><span class="nat-${it.nat}">${it.nat === "custeio" ? "Custeio" : "Permanente"}</span></td><td class="cat"><span class="cat-${it.c}">${catLabels[it.c]}</span></td><td class="num">${fmt(it.q)}</td><td class="num">${fmt(it.u)}</td><td class="num"><strong>${fmt(tot)}</strong></td>`;
+    tbody.appendChild(tr);
+  });
+  const colspan = temFonte ? 7 : 6;
+  const totalLbl = document.getElementById("totalLabel");
+  totalLbl.setAttribute("colspan", colspan);
+  const fonteNome = fonteAtual === "capes" ? "CAPES" : (fonteAtual === "fapemat" ? "FAPEMAT" : "CAPES + FAPEMAT");
+  const corTotal = fonteAtual === "capes" ? "var(--capes)" : (fonteAtual === "fapemat" ? "var(--fapemat)" : "var(--accent)");
+  totalLbl.innerHTML = `TOTAL ${fonteNome}:`;
+  document.getElementById("totalValor").innerHTML = `<span style="color:${corTotal}">R$ ${fmt(total)}</span>`;
+  document.getElementById("contadorItens").innerHTML = `<strong>${count}</strong> itens`;
+  document.getElementById("somaItens").innerHTML = `Subtotal: <strong>R$ ${fmt(total)}</strong>`;
+}
+
+function atualizarAlerta(){
+  const el = document.getElementById("alertaFonte");
+  if(fonteAtual === "capes"){
+    el.className = "alert capes";
+    el.innerHTML = `<span class="alert-icon">🔵</span><div><strong>CAPES/PROEXT-PG:</strong> 6 rubricas totalizando R$ 239.700,00. Rubricas fechadas. Toda NF identificada como CAPES. <u>Sem material permanente</u>.</div>`;
+  } else if(fonteAtual === "fapemat"){
+    el.className = "alert fapemat";
+    el.innerHTML = `<span class="alert-icon">🟢</span><div><strong>FAPEMAT (Contrapartida):</strong> 53 itens totalizando R$ 239.700,00 · Custeio (R$ 218.500) + Permanente (R$ 21.200). Processo FAPEMAT-PRO.0002209/2025.</div>`;
+  } else {
+    el.className = "alert";
+    el.innerHTML = `<span class="alert-icon">⚠️</span><div><strong>Visão unificada (apenas visualização):</strong> Total R$ 479.400,00 = CAPES R$ 239.700 + FAPEMAT R$ 239.700. Na execução e prestação de contas, as fontes são <strong>sempre separadas</strong>.</div>`;
+  }
+}
+
+function renderBars(){
+  // FAPEMAT por rubrica (no dashboard TA)
+  const rubricasFapemat = [
+    {nome:"Material de Consumo", v:91063.50},
+    {nome:"Outros Serviços de Terceiros", v:69000},
+    {nome:"Diárias", v:51936.50},
+    {nome:"Equip. e Material Permanente", v:21200},
+    {nome:"Passagens", v:6500},
+  ];
+  const totFpmt = rubricasFapemat.reduce((a,b)=>a+b.v,0);
+  document.getElementById("fapematBars").innerHTML = rubricasFapemat.map(r=>{
+    const pct = (r.v/totFpmt*100);
+    return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${r.nome}</span><span style="color:var(--muted)">R$ ${fmt(r.v)} · ${pct.toFixed(1)}%</span></div><div class="bar fapemat"><span style="width:${pct}%"></span></div></div>`;
+  }).join("");
+
+  // CAPES por rubrica
+  const el2 = document.getElementById("capesBars");
+  const totCapes = itensCapes.reduce((a,b)=>a+b.q*b.u,0);
+  el2.innerHTML = itensCapes.filter(it => it.q*it.u > 0).sort((a,b)=>(b.q*b.u)-(a.q*a.u)).map(it=>{
+    const v = it.q*it.u;
+    const pct = (v/totCapes*100);
+    return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${it.d}</span><span style="color:var(--muted)">R$ ${fmt(v)} · ${pct.toFixed(1)}%</span></div><div class="bar capes"><span style="width:${pct}%"></span></div></div>`;
+  }).join("");
+
+  // COP por rubrica
+  const elCOP = document.getElementById("copBars");
+  const totCOP = itensCOP.reduce((a,b)=>a+b.u,0);
+  elCOP.innerHTML = itensCOP.sort((a,b)=>b.u-a.u).map(it=>{
+    const pct = (it.u/totCOP*100);
+    return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${it.d}</span><span style="color:var(--muted)">R$ ${fmt(it.u)} · ${pct.toFixed(1)}%</span></div><div class="bar mpe"><span style="width:${pct}%"></span></div></div>`;
+  }).join("");
+}
+
+/* ============================================================
+   GANTT TA — 24 meses
+============================================================ */
+
+function renderGanttTA(){
+  const g = document.getElementById("ganttTA");
+  const inicio = new Date(2025, 10, 1); // nov/2025
+  const meses = [];
+  for(let i=0; i<24; i++){
+    const d = new Date(inicio.getFullYear(), inicio.getMonth()+i, 1);
+    meses.push({ano:d.getFullYear(), mes:d.getMonth()+1, label:d.toLocaleDateString("pt-BR",{month:"short",year:"2-digit"}), date:d});
   }
 
-  closeModal();
-  render();
+  // Mês atual
+  const hoje = new Date();
+  const mesesDecorridos = Math.floor((hoje - inicio) / (1000*60*60*24*30.44));
+  const mesAtualIdx = Math.max(0, Math.min(23, mesesDecorridos));
+  document.getElementById("taMonthNow").textContent = Math.max(1, mesAtualIdx+1);
+
+  const cols = `220px repeat(24, minmax(32px, 1fr))`;
+
+  // Header
+  let html = `<div class="gantt-header" style="grid-template-columns:${cols}">`;
+  html += `<div class="g-label">Atividade</div>`;
+  meses.forEach((m, idx) => {
+    const hl = idx === mesAtualIdx ? "highlight" : "";
+    html += `<div class="g-month ${hl}">${m.label}</div>`;
+  });
+  html += `</div>`;
+
+  // Linhas
+  atividadesTA.forEach(a => {
+    const done = state.atividadesTA[a.id];
+    html += `<div class="gantt-row" style="grid-template-columns:${cols}">`;
+    html += `<div class="g-label" title="${a.nome}"><strong>${a.id}</strong> · ${a.nome.substring(0,40)}${a.nome.length>40?"…":""}</div>`;
+    for(let i=0; i<24; i++){
+      const noRange = (i+1) >= a.start && (i+1) < (a.start + a.dur);
+      const cls = noRange ? "g-cell in-range" : "g-cell";
+      let bar = "";
+      if(i+1 === a.start){
+        const span = a.dur;
+        bar = `<div class="gantt-bar fapemat ${done?'done':''}" style="left:2px;right:2px;width:calc(${span * 100}% - 4px)"><span style="overflow:hidden;text-overflow:ellipsis">${a.id} · ${a.chs}h/sem</span></div>`;
+      }
+      html += `<div class="${cls}">${bar}</div>`;
+    }
+    html += `</div>`;
+  });
+
+  g.innerHTML = html;
+
+  // Linha do hoje
+  setTimeout(() => {
+    const header = g.querySelector(".gantt-header");
+    if(!header || mesAtualIdx < 0) return;
+    const monthEl = header.children[mesAtualIdx + 1];
+    if(!monthEl) return;
+    const rect = monthEl.getBoundingClientRect();
+    const gRect = g.getBoundingClientRect();
+    const left = rect.left - gRect.left + rect.width/2;
+    const line = document.createElement("div");
+    line.className = "gantt-today-line";
+    line.style.left = left + "px";
+    const lbl = document.createElement("div");
+    lbl.className = "gantt-today-label";
+    lbl.style.left = left + "px";
+    lbl.textContent = "HOJE";
+    line.appendChild(lbl);
+    g.appendChild(line);
+  }, 50);
 }
 
 /* ============================================================
-   RENDER ENGINE
-   ============================================================ */
-function badge(bg,c,txt){ return `<span class="badge" style="background:${bg};color:${c}">${txt}</span>`; }
-function progBar(pct,color){ return `<div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${color}"></div></div>`; }
-function iconEdit(){ return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`; }
-function iconTrash(){ return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>`; }
-function iconCheck(){ return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`; }
-function iconPlus(){ return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`; }
-function iconDown(){ return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`; }
-function iconFile(c){ return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`; }
+   GANTT COP
+============================================================ */
 
-function btnRow(id, type, section, item, color='#6B7280'){
-  const d = encodeURI(JSON.stringify({type,section,item}));
-  return `<button class="btn-sm" onclick='editItem(${item.id},"${type}","${section||''}")'>${iconEdit()}</button>
-          <button class="btn-danger" onclick='delItem(${JSON.stringify(item.id)},"${type}","${section||''}")'>${iconTrash()}</button>`;
+function renderGanttCOP(){
+  const g = document.getElementById("ganttCOP");
+  // 6 meses: ago/2025 a jan/2026
+  const inicio = new Date(2025, 7, 1);
+  const semanas = [];
+  for(let i=0; i<24; i++){
+    const d = new Date(inicio);
+    d.setDate(d.getDate() + i*7);
+    semanas.push({label:`S${i+1}`, date:new Date(d)});
+  }
+  const hoje = new Date();
+  const diasPassados = (hoje - inicio)/(1000*60*60*24);
+  const semAtual = Math.max(0, Math.min(23, Math.floor(diasPassados/7)));
+
+  // Calcula posição percentual para cada etapa
+  const totalDias = 24*7;
+  function pctRange(startStr, endStr){
+    const s = new Date(startStr);
+    const e = new Date(endStr);
+    const sD = (s - inicio)/(1000*60*60*24);
+    const eD = (e - inicio)/(1000*60*60*24);
+    return { left: (sD/totalDias)*100, width: ((eD-sD+1)/totalDias)*100 };
+  }
+
+  const cols = `220px repeat(24, minmax(26px, 1fr))`;
+  let html = `<div class="gantt-header" style="grid-template-columns:${cols}">`;
+  html += `<div class="g-label">Etapa</div>`;
+  semanas.forEach((s, idx) => {
+    // mostra label do mês na 1ª semana do mês
+    const mesInicio = s.date.getDate() <= 7;
+    const hl = idx === semAtual ? "highlight" : "";
+    const lbl = mesInicio ? s.date.toLocaleDateString("pt-BR",{month:"short"}) : "";
+    html += `<div class="g-month ${hl}">${lbl}</div>`;
+  });
+  html += `</div>`;
+
+  // Etapas como barras posicionadas via %
+  etapasCOP.forEach(e => {
+    const r = pctRange(e.start, e.end);
+    html += `<div class="gantt-row" style="grid-template-columns:220px 1fr;align-items:center">`;
+    html += `<div class="g-label" title="${e.nome}"><strong>${e.id}</strong> · ${e.nome}</div>`;
+    html += `<div style="position:relative;height:28px;background:var(--panel-3);border-radius:3px"><div class="gantt-bar mpe" style="left:${r.left}%;width:${r.width}%;right:auto"><span>${e.nome}</span></div></div>`;
+    html += `</div>`;
+  });
+
+  g.innerHTML = html;
+
+  // Linha de hoje
+  setTimeout(() => {
+    if(semAtual < 0 || semAtual > 23) return;
+    const header = g.querySelector(".gantt-header");
+    if(!header) return;
+    const weekEl = header.children[semAtual + 1];
+    if(!weekEl) return;
+    const rect = weekEl.getBoundingClientRect();
+    const gRect = g.getBoundingClientRect();
+    const left = rect.left - gRect.left + rect.width/2;
+    const line = document.createElement("div");
+    line.className = "gantt-today-line";
+    line.style.left = left + "px";
+    const lbl = document.createElement("div");
+    lbl.className = "gantt-today-label";
+    lbl.style.left = left + "px";
+    lbl.textContent = "HOJE";
+    line.appendChild(lbl);
+    g.appendChild(line);
+  }, 50);
 }
-
-window.editItem = function(rawId, type, section){
-  let list;
-  if(type==='obj') list = STATE[{unemat:'objU',capes:'objC',fapemat:'objF'}[section]];
-  else if(type==='gantt') list = STATE.gantt;
-  else if(type==='budget') list = STATE[section==='capes'?'bCapes':'bFapemat'];
-  else if(type==='team') list = STATE.team;
-  else if(type==='doc') list = STATE.docs;
-  const item = list.find(x=>String(x.id)===String(rawId));
-  if(item) openModal({type,mode:'edit',section,item:{...item}});
-};
-
-window.delItem = function(rawId, type, section){
-  if(!confirm('Remover este item?')) return;
-  if(type==='obj'){ const k={unemat:'objU',capes:'objC',fapemat:'objF'}[section]; STATE[k]=STATE[k].filter(x=>String(x.id)!==String(rawId)); save(k); }
-  else if(type==='gantt'){ STATE.gantt=STATE.gantt.filter(x=>String(x.id)!==String(rawId)); save('gantt'); }
-  else if(type==='budget'){ const k=section==='capes'?'bCapes':'bFapemat'; STATE[k]=STATE[k].filter(x=>String(x.id)!==String(rawId)); save(k); }
-  else if(type==='team'){ STATE.team=STATE.team.filter(x=>String(x.id)!==String(rawId)); save('team'); }
-  else if(type==='doc'){ STATE.docs=STATE.docs.filter(x=>String(x.id)!==String(rawId)); save('docs'); }
-  render();
-};
-
-window.toggleDone = function(rawId, type, section){
-  if(type==='obj'){ const k={unemat:'objU',capes:'objC',fapemat:'objF'}[section]; STATE[k]=STATE[k].map(x=>String(x.id)===String(rawId)?{...x,done:!x.done}:x); save(k); }
-  else if(type==='gantt'){ STATE.gantt=STATE.gantt.map(x=>String(x.id)===String(rawId)?{...x,done:!x.done}:x); save('gantt'); }
-  render();
-};
-
-window.setTab = function(t){ STATE.tab=t; save('tab'); render(); };
-window.setTeamFilter = function(f){ STATE.teamFilter=f; save('teamFilter'); render(); };
-window.setDocFilter = function(f){ STATE.docFilter=f; save('docFilter'); render(); };
 
 /* ============================================================
-   RENDER SECTIONS
-   ============================================================ */
-function renderObjSection(title, color, items, section){
-  const done = items.filter(x=>x.done).length;
-  const pct = items.length ? Math.round(done/items.length*100) : 0;
-  return `
-  <div class="card" style="margin-bottom:1.25rem;border-left:4px solid ${color}">
-    <div class="section-head">
-      <div class="section-head-left">
-        <div class="section-title">${esc(title)} ${badge(color+'18',color,`${done}/${items.length} concluídos`)}</div>
-        <div class="prog-wrap-sm" style="width:180px"><div class="prog-bar" style="width:${pct}%;background:${color}"></div></div>
-      </div>
-      <button class="btn-primary" style="background:${color}" onclick="openModal({type:'obj',mode:'add',section:'${section}',item:{text:'',done:false,periodo:'',meses:''}})">
-        ${iconPlus()} Adicionar
-      </button>
-    </div>
-    <div>
-      ${items.map(item=>`
-      <div class="obj-row ${item.done?'done':''}">
-        <button class="cb" style="border-color:${item.done?color:'#D1D5DB'};background:${item.done?color:'#fff'};margin-top:2px" onclick="toggleDone('${item.id}','obj','${section}')">
-          ${item.done?`<span style="color:#fff">${iconCheck()}</span>`:''}
-        </button>
-        <div style="flex:1;min-width:0">
-          <p class="obj-text ${item.done?'done':''}">${esc(item.text)}</p>
-          ${item.periodo?`<span class="obj-meta">${esc(item.periodo)}</span>`:''}
-          ${item.meses?badge(color+'15',color,'Meses '+item.meses):''}
-        </div>
-        <div style="display:flex;gap:.3rem;flex-shrink:0">${btnRow(item.id,'obj',section,item)}</div>
-      </div>`).join('')}
-      ${items.length===0?'<p class="empty">Nenhum objetivo cadastrado.</p>':''}
-    </div>
-  </div>`;
-}
+   CHECKLISTS
+============================================================ */
 
-function renderGantt(){
-  const today = new Date();
-  const todayPct = gL(today.toISOString().split('T')[0]);
-  const years = [2024,2025,2026,2027];
-  const yearPct = y => gL(`${y}-01-01`);
-  const yearW = y => gL(`${y+1}-01-01`) - gL(`${y}-01-01`);
-
-  const gantt = STATE.gantt;
-  const labelRows = gantt.map(item=>`
-    <div class="gantt-labels"><div class="gl-row">
-      <button class="cb" style="width:16px;height:16px;border-radius:4px;border:2px solid ${item.done?item.color:'#D1D5DB'};background:${item.done?item.color:'#fff'}" onclick="toggleDone(${item.id},'gantt','')">
-        ${item.done?`<span style="color:#fff;font-size:10px">${iconCheck()}</span>`:''}
-      </button>
-      <span style="font-size:.72rem;color:${item.done?'#9CA3AF':'#374151'};flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item.label)}">${esc(item.label)}</span>
-    </div></div>`).join('');
-
-  const timelineRows = gantt.map(item=>{
-    const l = gL(item.startDate);
-    const w = gW(item.startDate, item.endDate);
-    return `<div class="gantt-row">
-      ${years.map(y=>`<div style="position:absolute;left:${yearPct(y)}%;width:${yearW(y)}%;height:100%;border-left:1px solid #F3F4F6"></div>`).join('')}
-      ${todayPct>0&&todayPct<100?`<div style="position:absolute;left:${todayPct}%;top:0;bottom:0;width:1px;background:#FCA5A5;z-index:5"></div>`:''}
-      <div class="gantt-bar" style="left:${l}%;width:${w}%;background:${item.color};opacity:${item.done?.45:.88}">
-        <button class="gantt-bar-btn" onclick="editItem(${item.id},'gantt','')">${iconEdit()}</button>
-        <button class="gantt-bar-btn" onclick="delItem(${item.id},'gantt','')">${iconTrash()}</button>
+function renderChecklistTA(){
+  const el = document.getElementById("checklistTA");
+  el.innerHTML = atividadesTA.map(a=>{
+    const done = state.atividadesTA[a.id] || false;
+    return `<div class="check-item ${done?'done':''}" data-key="${a.id}">
+      <input type="checkbox" ${done?'checked':''}>
+      <div>
+        <div class="check-text">${a.id} · ${a.nome}</div>
+        <div class="check-meta">Início: mês ${a.start} · Duração: ${a.dur} meses · CH: ${a.chs}h/sem · Responsável: ${a.resp}</div>
       </div>
     </div>`;
-  }).join('');
-
-  return `
-  <div class="page-head">
-    <div><div class="page-title">Cronograma de Execução</div><p style="color:#6B7280;font-size:.82rem;margin:.25rem 0 0">Março/2024 a Dezembro/2027</p></div>
-    <button class="btn-primary" style="background:#7C3AED" onclick="openModal({type:'gantt',mode:'add',section:'',item:{label:'',source:'CAPES',startDate:'',endDate:'',done:false}})">
-      ${iconPlus()} Nova Atividade
-    </button>
-  </div>
-  <div class="card-flush">
-    <div class="gantt-wrap">
-      <div style="width:230px;flex-shrink:0">
-        <div class="gl-header"><span style="font-size:.73rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.05em">Atividade</span></div>
-        ${gantt.map(item=>`
-        <div class="gl-row">
-          <button class="cb" style="width:16px;height:16px;border-radius:4px;border:2px solid ${item.done?item.color:'#D1D5DB'};background:${item.done?item.color:'#fff'}" onclick="toggleDone(${item.id},'gantt','')">
-            ${item.done?`<span style="color:#fff">${iconCheck()}</span>`:''}
-          </button>
-          <span style="font-size:.72rem;color:${item.done?'#9CA3AF':'#374151'};flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item.label)}">${esc(item.label)}</span>
-        </div>`).join('')}
-      </div>
-      <div style="flex:1;overflow-x:auto">
-        <div class="gantt-inner">
-          <div class="year-header">
-            ${years.map(y=>`<div class="year-tick" style="left:${yearPct(y)}%;width:${yearW(y)}%">${y}</div>`).join('')}
-            ${todayPct>0&&todayPct<100?`<div class="today-line" style="left:${todayPct}%"><div class="today-label">Hoje</div></div>`:''}
-          </div>
-          ${gantt.map(item=>{
-            const l=gL(item.startDate),w=gW(item.startDate,item.endDate);
-            return `<div class="gantt-row">
-              ${years.map(y=>`<div style="position:absolute;left:${yearPct(y)}%;width:${yearW(y)}%;height:100%;border-left:1px solid #F3F4F6"></div>`).join('')}
-              ${todayPct>0&&todayPct<100?`<div style="position:absolute;left:${todayPct}%;top:0;bottom:0;width:1px;background:#FCA5A5;z-index:5"></div>`:''}
-              <div class="gantt-bar" style="left:${l}%;width:${w}%;background:${item.color};opacity:${item.done?.45:.88}">
-                <button class="gantt-bar-btn" onclick="editItem(${item.id},'gantt','')">${iconEdit()}</button>
-                <button class="gantt-bar-btn" onclick="delItem(${item.id},'gantt','')">${iconTrash()}</button>
-              </div>
-            </div>`;
-          }).join('')}
-          <div class="gantt-legend">
-            ${Object.entries(SRC_COLOR).map(([k,v])=>`<div class="legend-item"><div class="legend-dot" style="background:${v}"></div>${k}</div>`).join('')}
-            <div class="legend-item"><div style="width:2px;height:12px;background:#EF4444;border-radius:1px"></div><span style="color:#EF4444">Hoje</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>`;
+  }).join("");
+  el.querySelectorAll(".check-item").forEach(ci=>{
+    ci.addEventListener("click", (e)=>{
+      const key = ci.dataset.key;
+      state.atividadesTA[key] = !state.atividadesTA[key];
+      saveState(state);
+      ci.classList.toggle("done");
+      ci.querySelector("input").checked = state.atividadesTA[key];
+      atualizarProgressoTA();
+      renderGanttTA();
+    });
+  });
 }
 
-function renderBudget(){
-  const sections = [
-    {label:'CAPES',color:'#2563EB',bg:'#EFF6FF',list:STATE.bCapes,key:'bCapes',section:'capes'},
-    {label:'FAPEMAT',color:'#DB2777',bg:'#FDF2F8',list:STATE.bFapemat,key:'bFapemat',section:'fapemat'},
-  ];
-  return `
-  <div class="page-head"><div class="page-title">Orçamento do Projeto</div></div>
-  <div class="grid-2">
-  ${sections.map(b=>{
-    const total=b.list.reduce((s,x)=>s+(x.aprovado||0),0);
-    const exec=b.list.reduce((s,x)=>s+(x.executado||0),0);
-    const pct=total>0?(exec/total*100):0;
-    return `<div class="card-flush">
-      <div style="padding:1.1rem 1.25rem;border-bottom:1px solid #F3F4F6;display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-weight:700;font-size:1rem;color:#111827">${b.label}</div>
-          <div style="font-size:.78rem;color:#6B7280;margin-top:.15rem">${fBRL(exec)} executado de ${fBRL(total)}</div>
-        </div>
-        <button class="btn-primary" style="background:${b.color}" onclick="openModal({type:'budget',mode:'add',section:'${b.section}',item:{item:'',aprovado:0,executado:0}})">
-          ${iconPlus()} Adicionar
-        </button>
-      </div>
-      <div style="padding:.75rem 1.25rem;background:${b.bg};border-bottom:1px solid #F3F4F6">
-        <div style="display:flex;justify-content:space-between;margin-bottom:.4rem">
-          <span style="font-size:.75rem;font-weight:600;color:${b.color}">Progresso total</span>
-          <span style="font-size:.75rem;font-weight:700;color:${b.color}">${pct.toFixed(1)}%</span>
-        </div>
-        <div style="height:8px;background:#fff;border-radius:10px;border:1px solid ${b.color}22">
-          <div style="height:100%;width:${pct}%;background:${b.color};border-radius:10px"></div>
-        </div>
-      </div>
-      ${b.list.map(item=>{
-        const p=item.aprovado>0?Math.min(100,item.executado/item.aprovado*100):0;
-        const saldo=item.aprovado-item.executado;
-        return `<div class="budget-row">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem">
-            <span style="font-size:.83rem;color:#374151;font-weight:500;flex:1">${esc(item.item)}</span>
-            <div style="display:flex;gap:.3rem">${btnRow(item.id,'budget',b.section,item)}</div>
-          </div>
-          <div class="budget-figures">
-            <div class="budget-fig"><label>Aprovado</label><div class="val" style="color:${b.color}">${fBRL(item.aprovado)}</div></div>
-            <div class="budget-fig"><label>Executado</label><div class="val" style="color:#374151">${fBRL(item.executado)}</div></div>
-            <div class="budget-fig"><label>Saldo</label><div class="val" style="color:${saldo>=0?'#059669':'#DC2626'}">${fBRL(saldo)}</div></div>
-            <div style="margin-left:auto;display:flex;align-items:center">${badge(p>80?'#FEE2E2':'#F0FDF4',p>80?'#DC2626':'#059669',p.toFixed(0)+'%')}</div>
-          </div>
-          ${progBar(p,b.color)}
-        </div>`;
-      }).join('')}
+function renderObjetivosTA(){
+  const el = document.getElementById("objetivosTA");
+  el.innerHTML = objetivosTA.map((o, i)=>{
+    const done = state.objetivosTA[i] || false;
+    return `<div class="check-item ${done?'done':''}" data-idx="${i}">
+      <input type="checkbox" ${done?'checked':''}>
+      <div class="check-text">${i+1}. ${o}</div>
     </div>`;
-  }).join('')}
-  </div>`;
+  }).join("");
+  el.querySelectorAll(".check-item").forEach(ci=>{
+    ci.addEventListener("click", ()=>{
+      const i = ci.dataset.idx;
+      state.objetivosTA[i] = !state.objetivosTA[i];
+      saveState(state);
+      ci.classList.toggle("done");
+      ci.querySelector("input").checked = state.objetivosTA[i];
+    });
+  });
 }
 
-function renderTeam(){
-  const filtered = STATE.teamFilter==='todos' ? STATE.team : STATE.teamFilter==='bolsistas' ? STATE.team.filter(x=>x.bolsa) : STATE.team.filter(x=>!x.bolsa);
-  return `
-  <div class="page-head">
-    <div class="page-title">Equipe do Projeto</div>
-    <div class="filters">
-      ${['todos','bolsistas','membros'].map(f=>`<button class="btn-filter ${STATE.teamFilter===f?'active':''}" onclick="setTeamFilter('${f}')">${f.charAt(0).toUpperCase()+f.slice(1)}</button>`).join('')}
-      <button class="btn-primary" style="background:#7C3AED" onclick="openModal({type:'team',mode:'add',section:'',item:{nome:'',funcao:'',instituicao:'',tipo:'membro',bolsa:false,fonte:'—',email:'—',inicio:'',fim:''}})">
-        ${iconPlus()} Adicionar
-      </button>
-    </div>
-  </div>
-  <div class="grid-team">
-  ${filtered.map(m=>{
-    const tc = TIPO_CFG[m.tipo]||TIPO_CFG.membro;
-    const ac = tc.ac;
-    const initials = m.nome.split(' ').filter((_,i,a)=>i===0||i===a.length-1).map(n=>n[0]).join('').slice(0,2).toUpperCase();
-    return `<div class="team-card" style="border-top-color:${ac}">
-      <div style="display:flex;gap:.75rem;align-items:flex-start">
-        <div class="avatar" style="background:${ac}20;color:${ac}">${initials}</div>
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.3rem">
-            <div style="font-weight:700;font-size:.87rem;color:#111827;line-height:1.3">${esc(m.nome)}</div>
-            <div style="display:flex;gap:.25rem;flex-shrink:0">${btnRow(m.id,'team','',m)}</div>
-          </div>
-          <div style="font-size:.77rem;color:#6B7280;margin-top:.2rem">${esc(m.funcao)}</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center">
-        ${badge(tc.bg,tc.c,tc.label)}
-        ${m.bolsa?badge('#F5F3FF','#7C3AED','&#9733; Bolsista — '+esc(m.fonte)):''}
-        ${badge('#F3F4F6','#6B7280',esc(m.instituicao))}
-      </div>
-      <div class="team-meta"><span>${esc(m.email)}</span><span>${esc(m.inicio)} → ${esc(m.fim)}</span></div>
-    </div>`;
-  }).join('')}
-  ${filtered.length===0?'<p class="empty" style="grid-column:1/-1">Nenhum membro encontrado.</p>':''}
-  </div>`;
-}
-
-function renderDocs(){
-  const filtered = STATE.docFilter==='todos' ? STATE.docs : STATE.docs.filter(x=>x.tipo===STATE.docFilter);
-  return `
-  <div class="page-head">
-    <div class="page-title">Repositório de Documentos</div>
-    <div class="filters">
-      ${['todos','CAPES','UNEMAT','FAPEMAT','Bolsista'].map(f=>`<button class="btn-filter btn-filter-blue ${STATE.docFilter===f?'active':''}" onclick="setDocFilter('${f}')">${f.charAt(0).toUpperCase()+f.slice(1)}</button>`).join('')}
-      <button class="btn-primary" style="background:#2563EB" onclick="openModal({type:'doc',mode:'add',section:'',item:{nome:'',tipo:'CAPES',arquivo:'',descricao:''}})">
-        ${iconPlus()} Adicionar
-      </button>
-    </div>
-  </div>
-  <div class="card-flush">
-    <div style="padding:.85rem 1.25rem;background:#F9FAFB;border-bottom:1px solid #F3F4F6;display:flex;gap:.5rem;align-items:center">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span style="font-size:.77rem;color:#6B7280">Os arquivos estão armazenados localmente. O botão mostra o nome do arquivo para acesso manual.</span>
-    </div>
-    ${filtered.map(doc=>{
-      const dc=DOC_CFG[doc.tipo]||{c:'#374151',bg:'#F3F4F6'};
-      return `<div class="doc-row">
-        <div class="doc-icon" style="background:${dc.bg}">${iconFile(dc.c)}</div>
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.4rem">
-            <div>
-              <span style="font-weight:600;font-size:.85rem;color:#111827">${esc(doc.nome)}</span>
-              <div style="margin-top:.2rem">${badge(dc.bg,dc.c,doc.tipo)}</div>
-            </div>
-            <div style="display:flex;gap:.3rem">
-              <button class="btn-sm" style="color:${dc.c}" title="Arquivo: ${esc(doc.arquivo)}">${iconDown()} ${esc(doc.arquivo)}</button>
-              ${btnRow(doc.id,'doc','',doc)}
-            </div>
-          </div>
-          <p style="margin:.4rem 0 0;font-size:.78rem;color:#6B7280;line-height:1.5">${esc(doc.descricao)}</p>
-        </div>
+function renderChecklistCOP(){
+  const el = document.getElementById("checklistCOP");
+  let html = "";
+  marcosCOP.forEach((grupo, gi)=>{
+    html += `<h4 style="margin:14px 0 4px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px">${grupo.g}</h4>`;
+    grupo.items.forEach((item, ii)=>{
+      const key = `${gi}-${ii}`;
+      const done = state.marcosCOP[key] || false;
+      html += `<div class="check-item ${done?'done':''}" data-key="${key}">
+        <input type="checkbox" ${done?'checked':''}>
+        <div class="check-text">${item}</div>
       </div>`;
-    }).join('')}
-    ${filtered.length===0?'<p class="empty">Nenhum documento encontrado.</p>':''}
-  </div>`;
+    });
+  });
+  el.innerHTML = html;
+  el.querySelectorAll(".check-item").forEach(ci=>{
+    ci.addEventListener("click", ()=>{
+      const key = ci.dataset.key;
+      state.marcosCOP[key] = !state.marcosCOP[key];
+      saveState(state);
+      ci.classList.toggle("done");
+      ci.querySelector("input").checked = state.marcosCOP[key];
+      atualizarProgressoCOP();
+    });
+  });
 }
 
-function renderDashboard(){
-  const totalObj=[...STATE.objU,...STATE.objC,...STATE.objF].length;
-  const doneObj=[...STATE.objU,...STATE.objC,...STATE.objF].filter(x=>x.done).length;
-  const totalBC=STATE.bCapes.reduce((s,x)=>s+(x.aprovado||0),0);
-  const totalBF=STATE.bFapemat.reduce((s,x)=>s+(x.aprovado||0),0);
-  const execBC=STATE.bCapes.reduce((s,x)=>s+(x.executado||0),0);
-  const execBF=STATE.bFapemat.reduce((s,x)=>s+(x.executado||0),0);
-  const bolsistas=STATE.team.filter(x=>x.bolsa);
-
-  const progCards = [
-    {label:'Objetivos UNEMAT',done:STATE.objU.filter(x=>x.done).length,total:STATE.objU.length,color:'#059669',bg:'#ECFDF5'},
-    {label:'Objetivos CAPES',done:STATE.objC.filter(x=>x.done).length,total:STATE.objC.length,color:'#2563EB',bg:'#EFF6FF'},
-    {label:'Atividades FAPEMAT',done:STATE.objF.filter(x=>x.done).length,total:STATE.objF.length,color:'#DB2777',bg:'#FDF2F8'},
-  ];
-
-  return `
-  <h2 style="margin:0 0 1.25rem;font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:#111827">Visão Geral do Projeto</h2>
-  <div class="grid-3" style="margin-bottom:1.5rem">
-    ${progCards.map(s=>{
-      const pct=s.total?Math.round(s.done/s.total*100):0;
-      return `<div class="card" style="border-left:4px solid ${s.color}">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <span style="font-weight:600;font-size:.85rem;color:#374151">${s.label}</span>
-          ${badge(s.bg,s.color,pct+'%')}
-        </div>
-        <div style="font-size:2rem;font-weight:800;font-family:'Sora',sans-serif;color:${s.color};margin:.5rem 0 .25rem">${s.done}<span style="font-size:1rem;color:#9CA3AF;font-weight:400">/${s.total}</span></div>
-        ${progBar(pct,s.color)}
-      </div>`;
-    }).join('')}
-  </div>
-  <div class="card" style="margin-bottom:1.5rem">
-    <h3 style="margin:0 0 1rem;font-size:.95rem;font-weight:700;color:#111827">Bolsistas em Destaque</h3>
-    <div class="grid-3">
-      ${bolsistas.map(m=>{
-        const tc=TIPO_CFG[m.tipo]||TIPO_CFG.membro;
-        const ac=tc.ac;
-        const initials=m.nome.split(' ').filter((_,i,a)=>i===0||i===a.length-1).map(n=>n[0]).join('').slice(0,2).toUpperCase();
-        return `<div style="display:flex;gap:.75rem;align-items:center;padding:.75rem 1rem;background:${ac}08;border-radius:10px;border:1px solid ${ac}22">
-          <div class="avatar" style="background:${ac}20;color:${ac};width:40px;height:40px;font-size:.82rem">${initials}</div>
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:700;font-size:.82rem;color:#111827">${esc(m.nome.split(' ').slice(0,2).join(' '))}</div>
-            <div style="font-size:.72rem;color:#6B7280;margin-top:.1rem">${esc(m.funcao.split('—')[0].trim())}</div>
-            ${badge(tc.bg,tc.c,esc(m.fonte))}
-          </div>
-        </div>`;
-      }).join('')}
-    </div>
-  </div>
-  <div class="grid-2">
-    ${[{label:'CAPES — R$ 239.700',total:totalBC,exec:execBC,color:'#2563EB',list:STATE.bCapes},
-       {label:'FAPEMAT — R$ 239.700',total:totalBF,exec:execBF,color:'#DB2777',list:STATE.bFapemat}].map(b=>`
-    <div class="card">
-      <div style="font-weight:700;font-size:.88rem;color:#111827;margin-bottom:.75rem">${b.label}</div>
-      ${b.list.map(i=>`
-      <div style="margin-bottom:.5rem">
-        <div style="display:flex;justify-content:space-between;font-size:.73rem;color:#6B7280;margin-bottom:.2rem">
-          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${esc(i.item.split('(')[0].trim())}</span>
-          <span style="flex-shrink:0;margin-left:.5rem">${fBRL(i.aprovado)}</span>
-        </div>
-        <div class="prog-wrap-xs"><div class="prog-bar" style="width:${i.aprovado>0?Math.min(100,i.executado/i.aprovado*100):0}%;background:${b.color}"></div></div>
-      </div>`).join('')}
-    </div>`).join('')}
-  </div>`;
+function renderResultadosCOP(){
+  const el = document.getElementById("resultadosCOP");
+  el.innerHTML = resultadosCOP.map((r, i)=>{
+    const done = state.resultadosCOP[i] || false;
+    return `<div class="check-item ${done?'done':''}" data-idx="${i}">
+      <input type="checkbox" ${done?'checked':''}>
+      <div class="check-text">${i+1}. ${r}</div>
+    </div>`;
+  }).join("");
+  el.querySelectorAll(".check-item").forEach(ci=>{
+    ci.addEventListener("click", ()=>{
+      const i = ci.dataset.idx;
+      state.resultadosCOP[i] = !state.resultadosCOP[i];
+      saveState(state);
+      ci.classList.toggle("done");
+      ci.querySelector("input").checked = state.resultadosCOP[i];
+    });
+  });
 }
 
 /* ============================================================
-   MAIN RENDER
-   ============================================================ */
-function render(){
-  const TABS=[
-    {id:'dashboard',label:'Dashboard'},
-    {id:'objetivos',label:'Objetivos'},
-    {id:'gantt',label:'Cronograma'},
-    {id:'orcamento',label:'Orçamento'},
-    {id:'equipe',label:'Equipe'},
-    {id:'documentos',label:'Documentos'},
-  ];
+   PROGRESSO (anéis)
+============================================================ */
 
-  el('navTabs').innerHTML = TABS.map(t=>`<button class="tab-btn ${STATE.tab===t.id?'active':''}" onclick="setTab('${t.id}')">${t.label}</button>`).join('');
-
-  const totalObj=[...STATE.objU,...STATE.objC,...STATE.objF].length;
-  const doneObj=[...STATE.objU,...STATE.objC,...STATE.objF].filter(x=>x.done).length;
-  const totalBC=STATE.bCapes.reduce((s,x)=>s+(x.aprovado||0),0);
-  const totalBF=STATE.bFapemat.reduce((s,x)=>s+(x.aprovado||0),0);
-  const execBC=STATE.bCapes.reduce((s,x)=>s+(x.executado||0),0);
-  const execBF=STATE.bFapemat.reduce((s,x)=>s+(x.executado||0),0);
-
-  el('headerStats').innerHTML=[
-    {label:'Total CAPES',val:fBRL(totalBC),sub:'Executado: '+fBRL(execBC)},
-    {label:'Total FAPEMAT',val:fBRL(totalBF),sub:'Executado: '+fBRL(execBF)},
-    {label:'Objetivos',val:`${doneObj}/${totalObj}`,sub:Math.round((doneObj/(totalObj||1))*100)+'% concluídos'},
-    {label:'Equipe',val:STATE.team.length,sub:STATE.team.filter(x=>x.bolsa).length+' bolsistas'},
-  ].map(s=>`<div class="stat-card"><div class="slabel">${s.label}</div><div class="sval">${s.val}</div><div class="ssub">${s.sub}</div></div>`).join('');
-
-  const content = {
-    dashboard: renderDashboard,
-    objetivos: () => `
-      <h2 style="margin:0 0 1.25rem;font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:#111827">Objetivos do Projeto</h2>
-      ${renderObjSection('UNEMAT — 2ª Edição (PJ241-2025)','#059669',STATE.objU,'unemat')}
-      ${renderObjSection('CAPES — PROEXT-PG Edital 03/2024','#2563EB',STATE.objC,'capes')}
-      ${renderObjSection('FAPEMAT — Atividades A-1 a A-8','#DB2777',STATE.objF,'fapemat')}`,
-    gantt: renderGantt,
-    orcamento: renderBudget,
-    equipe: renderTeam,
-    documentos: renderDocs,
-  };
-
-  el('mainContent').innerHTML = (content[STATE.tab]||content.dashboard)();
+function atualizarProgressoTA(){
+  const total = atividadesTA.length;
+  const feitos = atividadesTA.filter(a => state.atividadesTA[a.id]).length;
+  const pct = Math.round((feitos/total)*100);
+  const ring = document.getElementById("taProgressRing");
+  const circ = 2 * Math.PI * 25;
+  ring.setAttribute("stroke-dasharray", circ);
+  ring.setAttribute("stroke-dashoffset", circ * (1 - pct/100));
+  document.getElementById("taProgressPct").textContent = pct + "%";
+  document.getElementById("taProgressLabel").textContent = `${feitos} de ${total} atividades`;
 }
+
+function atualizarProgressoCOP(){
+  const total = marcosCOP.reduce((a,g)=>a+g.items.length, 0);
+  const feitos = Object.values(state.marcosCOP).filter(v=>v).length;
+  const pct = total > 0 ? Math.round((feitos/total)*100) : 0;
+  const ring = document.getElementById("copProgressRing");
+  const circ = 2 * Math.PI * 25;
+  ring.setAttribute("stroke-dasharray", circ);
+  ring.setAttribute("stroke-dashoffset", circ * (1 - pct/100));
+  document.getElementById("copProgressPct").textContent = pct + "%";
+  const etapasFeitas = marcosCOP.filter((g,gi) => g.items.every((_,ii) => state.marcosCOP[`${gi}-${ii}`])).length;
+  document.getElementById("copProgressLabel").textContent = `${etapasFeitas} de ${marcosCOP.length} etapas concluídas · ${feitos}/${total} itens`;
+}
+
+/* ============================================================
+   EVENTOS FONTES / FILTROS
+============================================================ */
+
+document.querySelectorAll(".source-btn").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".source-btn").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    fonteAtual = b.dataset.source;
+    atualizarFiltroCategoria();
+    atualizarCabecalho();
+    atualizarAlerta();
+    renderTabela();
+  });
+});
+
+document.getElementById("buscaItem").addEventListener("input", renderTabela);
+document.getElementById("filtroCat").addEventListener("change", renderTabela);
+document.getElementById("filtroNat").addEventListener("change", renderTabela);
+
+document.querySelectorAll(".chip-filter").forEach(c=>{
+  c.addEventListener("click", ()=>{
+    document.querySelectorAll(".chip-filter").forEach(x=>x.classList.remove("active"));
+    c.classList.add("active");
+    const f = c.dataset.docfilter;
+    document.querySelectorAll("#docGridTA .doc-card").forEach(card=>{
+      if(f === "todos") card.style.display = "";
+      else card.style.display = card.dataset.cat.includes(f) ? "" : "none";
+    });
+  });
+});
 
 /* ============================================================
    INIT
-   ============================================================ */
-function initApp(){
-  loadState();
-  render();
-}
+============================================================ */
 
-if(sessionStorage.getItem(SESSION_KEY)==='1') initApp();
+document.getElementById("anoNow").textContent = new Date().toLocaleDateString("pt-BR");
+document.getElementById("hoje").innerHTML = `Hoje: <strong>${new Date().toLocaleDateString("pt-BR")}</strong>`;
+
+renderTabs();
+atualizarFiltroCategoria();
+atualizarCabecalho();
+atualizarAlerta();
+renderTabela();
+renderBars();
+renderGanttTA();
+renderGanttCOP();
+renderChecklistTA();
+renderObjetivosTA();
+renderChecklistCOP();
+renderResultadosCOP();
+atualizarProgressoTA();
+atualizarProgressoCOP();
+
+// Recalcular Gantt ao trocar aba (tamanhos mudam)
+document.addEventListener("click", (e)=>{
+  if(e.target.closest(".tab-btn") || e.target.closest(".proj-pill")){
+    setTimeout(()=>{ renderGanttTA(); renderGanttCOP(); }, 80);
+  }
+});
+window.addEventListener("resize", ()=>{
+  renderGanttTA(); renderGanttCOP();
+});
 </script>
+
 </body>
 </html>
