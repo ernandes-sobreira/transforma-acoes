@@ -1,0 +1,15 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {cents,balances,assess,validateEntry,localIntent,validDate} from '../assets/finance.mjs';
+import {seedProjects} from '../assets/seed.mjs';
+const p={id:'a',reconciledAt:'2026-01-01',rubrics:[{id:'r',name:'Consumo',budget:100000}],endsOn:'2027-01-01'};
+const entries=[{projectId:'a',type:'income',amount:100000},{projectId:'a',rubricId:'r',type:'expense',amount:20000},{projectId:'a',rubricId:'r',type:'commitment',amount:30000},{projectId:'b',type:'expense',amount:900000}];
+test('BRL uses exact integer cents and rejects ambiguous/negative input',()=>{assert.equal(cents('R$ 1.234,56'),123456);assert.equal(cents('0,01'),1);assert.throws(()=>cents('1.25'));assert.throws(()=>cents('-20'));assert.throws(()=>cents('1e6'));});
+test('cash and rubric commitments do not count another project',()=>{const b=balances(p,entries);assert.equal(b.cash,80000);assert.equal(b.freeCash,50000);assert.equal(b.rubrics[0].remaining,50000);assert.equal(assess(p,entries,'r',50001).status,'blocked');});
+test('unknown historical cash never becomes available approved budget',()=>{assert.equal(assess({...p,reconciledAt:null},[],'r',10).status,'pending');assert.equal(assess({...p,reconciledAt:null},[],'r',10).cashAfter,null);});
+test('unknown rubric budget is different from zero',()=>{const capes=seedProjects[0];assert.equal(balances(capes,[]).rubrics.find(r=>r.id==='locacao').remaining,null);assert.equal(assess(capes,[],'locacao',1).status,'pending');});
+test('payment of reservation leaves committed funds counted once',()=>{const rows=[...entries.map(e=>e.type==='commitment'?{...e,cancelledAt:'now'}:e),{projectId:'a',rubricId:'r',type:'expense',amount:30000}];assert.equal(balances(p,rows).freeCash,50000);assert.equal(balances(p,rows).paid,50000);});
+test('rubric budget cannot override insufficient cash or dates',()=>{assert.equal(assess(p,[],'r',100).status,'blocked');assert.equal(assess(p,entries,'r',100,'2028-01-01').status,'blocked');});
+test('an expense must belong to an actual project rubric',()=>{assert.throws(()=>validateEntry({projectId:'a',type:'expense',amount:100,title:'Test',date:'2026-01-01',rubricId:'other'},p));});
+test('reference budgets preserved',()=>{assert.deepEqual(seedProjects.map(p=>p.rubrics.reduce((s,r)=>s+(r.budget||0),0)),[23970000,23970000,6500000]);});
+test('Portuguese commands retain ambiguity for human selection',()=>{const d=localIntent('Posso gastar R$ 1.200,50 com material de consumo?',seedProjects[1]);assert.equal(d.amount,120050);assert.equal(d.rubricId,'consumo');assert.equal(d.intent,'simulate');});
+test('invalid calendar dates rejected',()=>{assert.equal(validDate('2026-02-30'),false);assert.equal(validDate('2026-10-05'),true);});

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#142d34"><title>Assistente · Transforma-Ações</title><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/assistente.css"></head>
+<body>
+<a class="skip" href="#main">Ir para o conteúdo</a>
+<aside class="sidebar">
+  <a class="brand" href="assistente.html"><span class="brand-icon">t<span>↗</span></span><span>transforma<span class="brand-sub">ações que fazem diferença</span></span></a>
+  <div class="space-label">SEU ESPAÇO DE GESTÃO</div>
+  <nav aria-label="Principal">
+    <button class="nav active" data-view="chat"><span>✦</span> Conversar</button>
+    <button class="nav" data-view="balances"><span>◫</span> Saldos e gastos</button>
+    <button class="nav" data-view="documents"><span>▤</span> Documentos</button>
+    <button class="nav" data-view="actions"><span>◎</span> Ações do projeto</button>
+    <button class="nav" data-view="projects"><span>▦</span> Meus projetos</button>
+  </nav>
+  <div class="sidebar-bottom"><div class="storage-card"><span class="live-dot"></span><strong id="storageTitle">Abrindo seus registros…</strong><p id="storageText"></p><button class="text-button" id="accountButton">Conta e conexão →</button></div><button class="nav small" id="exportButton">↓ Baixar backup completo</button><button class="nav small" id="importButton">↑ Restaurar backup</button><a class="legacy" href="index.html">Abrir painel original ↗</a></div>
+</aside>
+<main id="main" class="main">
+  <header class="topbar"><div><span class="eyebrow">TRANSFORMA-AÇÕES</span><p>Mais clareza. Mais tempo para transformar.</p></div><button class="avatar" id="profileButton" aria-label="Abrir conta">TA</button></header>
+  <div class="project-line"><label for="projectSelect">Projeto em foco</label><select id="projectSelect" aria-label="Projeto em foco"></select><span class="mode" id="mode">Carregando</span></div>
+  <section id="view-chat" class="view active" aria-label="Conversa com a assistente">
+    <div class="welcome"><div class="spark">✦</div><span class="eyebrow">SUA ASSISTENTE DE PROJETOS</span><h1>Vamos cuidar dos<br><em>seus próximos passos?</em></h1><p>Pergunte sobre uma compra, acompanhe seus recursos<br class="desktop"> ou organize aquela nota que acabou de chegar.</p></div>
+    <div class="quick-grid"><button class="quick" data-prompt="Qual é meu saldo por rubrica?"><span>◫</span><strong>Como estão os saldos?</strong><small>Veja orçamento, despesas e reservas.</small></button><button class="quick" id="quickSimulate"><span>↗</span><strong>Posso fazer uma compra?</strong><small>Confira o impacto antes de gastar.</small></button><button class="quick" id="quickUpload"><span>▤</span><strong>Guardar uma nota fiscal</strong><small>Documento, projeto e rubrica juntos.</small></button></div>
+    <div id="messages" class="messages" role="log" aria-live="polite" aria-label="Histórico da conversa"></div>
+    <form id="chatForm" class="composer"><label class="sr-only" for="question">Sua mensagem</label><textarea id="question" rows="2" maxlength="4000" placeholder="Ex.: posso gastar R$ 1.200 com material de consumo?" required></textarea><div class="composer-bottom"><div><button type="button" class="icon-button" id="attachButton">＋ Anexar</button><button type="button" class="icon-button" id="micButton">◉ Falar</button></div><button class="primary" id="sendButton" type="submit">Enviar ↑</button></div></form>
+    <p class="composer-note" id="composerNote">Consultas básicas calculadas com seus registros. Conversa livre e leitura de notas dependem da ativação da IA.</p>
+  </section>
+  <section id="view-balances" class="view"><div class="section-heading"><div><span class="eyebrow">CADA REAL NO SEU LUGAR</span><h1>Saldos e gastos</h1></div><button class="primary" id="newEntry">＋ Lançamento</button></div><div id="balanceContent"></div></section>
+  <section id="view-documents" class="view"><div class="section-heading"><div><span class="eyebrow">TUDO FÁCIL DE ENCONTRAR</span><h1>Documentos</h1></div><button class="primary" id="newDocument">＋ Documento</button></div><div class="filter-row"><input id="documentSearch" type="search" aria-label="Buscar documentos" placeholder="Buscar nome, fornecedor, número da NF…"><select id="documentRubric" aria-label="Filtrar documentos por rubrica"></select></div><div id="documentContent"></div></section>
+  <section id="view-actions" class="view"><div class="section-heading"><div><span class="eyebrow">O QUE SEU PROJETO TRANSFORMA</span><h1>Ações do projeto</h1></div><button class="primary" id="newAction">＋ Registrar ação</button></div><div id="actionContent"></div></section>
+  <section id="view-projects" class="view"><div class="section-heading"><div><span class="eyebrow">CADA PROJETO, SUA ORGANIZAÇÃO</span><h1>Meus projetos</h1></div><button class="primary" id="newProject">＋ Novo projeto</button></div><div class="notice">Os orçamentos do painel original podem ser importados. Recebimentos e gastos precisam ser cadastrados e conferidos com os extratos.</div><div id="projectContent"></div><button class="secondary" id="seedButton">Importar CAPES, FAPEMAT e COP Pantanal</button></section>
+  <footer class="main-footer">Transforma-Ações <span>Gestão com propósito.</span></footer>
+</main>
+<dialog id="modal"><div class="modal-header"><h2 id="modalTitle"></h2><button id="closeModal" class="icon-button" aria-label="Fechar">✕</button></div><div id="modalContent"></div></dialog>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<input type="file" id="backupFile" accept="application/json,.json" hidden>
+<script type="module" src="assets/app.mjs"></script>
+</body></html>
