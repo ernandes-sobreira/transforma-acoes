@@ -10,6 +10,7 @@
     <button class="nav" data-view="balances"><span>◫</span> Saldos e gastos</button>
     <button class="nav" data-view="documents"><span>▤</span> Documentos</button>
     <button class="nav" data-view="actions"><span>◎</span> Ações do projeto</button>
+    <button class="nav" data-view="pending"><span>◷</span> Pendências e prazos</button>
     <button class="nav" data-view="projects"><span>▦</span> Meus projetos</button>
   </nav>
   <div class="sidebar-bottom"><div class="storage-card"><span class="live-dot"></span><strong id="storageTitle">Abrindo seus registros…</strong><p id="storageText"></p><button class="text-button" id="accountButton">Conta e conexão →</button></div><button class="nav small" id="exportButton">↓ Baixar backup completo</button><button class="nav small" id="importButton">↑ Restaurar backup</button><a class="legacy" href="index.html">Abrir painel original ↗</a></div>
@@ -27,6 +28,7 @@
   <section id="view-balances" class="view"><div class="section-heading"><div><span class="eyebrow">CADA REAL NO SEU LUGAR</span><h1>Saldos e gastos</h1></div><button class="primary" id="newEntry">＋ Lançamento</button></div><div id="balanceContent"></div></section>
   <section id="view-documents" class="view"><div class="section-heading"><div><span class="eyebrow">TUDO FÁCIL DE ENCONTRAR</span><h1>Documentos</h1></div><button class="primary" id="newDocument">＋ Documento</button></div><div class="filter-row"><input id="documentSearch" type="search" aria-label="Buscar documentos" placeholder="Buscar nome, fornecedor, número da NF…"><select id="documentRubric" aria-label="Filtrar documentos por rubrica"></select></div><div id="documentContent"></div></section>
   <section id="view-actions" class="view"><div class="section-heading"><div><span class="eyebrow">O QUE SEU PROJETO TRANSFORMA</span><h1>Ações do projeto</h1></div><button class="primary" id="newAction">＋ Registrar ação</button></div><div id="actionContent"></div></section>
+  <section id="view-pending" class="view"><div class="section-heading"><h1>Pendências e prazos</h1></div><div id="pendingContent" class="cards"></div></section>
   <section id="view-projects" class="view"><div class="section-heading"><div><span class="eyebrow">CADA PROJETO, SUA ORGANIZAÇÃO</span><h1>Meus projetos</h1></div><button class="primary" id="newProject">＋ Novo projeto</button></div><div class="notice">Os orçamentos do painel original podem ser importados. Recebimentos e gastos precisam ser cadastrados e conferidos com os extratos.</div><div id="projectContent"></div><button class="secondary" id="seedButton">Importar CAPES, FAPEMAT e COP Pantanal</button></section>
   <footer class="main-footer">Transforma-Ações <span>Gestão com propósito.</span></footer>
 </main>
