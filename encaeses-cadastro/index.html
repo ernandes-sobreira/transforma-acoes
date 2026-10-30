@@ -49,11 +49,11 @@ function renderPerson(p){
  '<div class="summary">'+summaryRow('Nome',p.full_name)+summaryRow('CPF',p.cpf)+summaryRow('E-mail',p.email)+summaryRow('Valor informado pela coordenação',money(p.amount_cents))+summaryRow('Endereço já informado',p.address_informed)+'</div>'+
  (p.original_note?'<p class="hint">Confira o endereço: '+escapeText(p.original_note)+'</p>':'')+
  (sent?'<div class="ok">Sua resposta foi recebida em '+escapeText(new Date(p.submitted_at).toLocaleString('pt-BR'))+'. Você pode atualizar os dados abaixo e reenviar.</div>':'')+
- '<form id="dados" autocomplete="on"><h2>Dados que faltam</h2><div class="grid">'+
+ '<form id="dados" autocomplete="on"><h2>Dados que faltam</h2><p class="hint">RG e PIS/PASEP podem ficar em branco nesta etapa. A FAPEMAT ainda pode exigir esses dados no recibo oficial. Se você usa a nova CIN, informe na observação.</p><div class="grid">'+
  inp('profession','Profissão / função *',p.profession,'text',true,'Ex.: professora, artesã, pesquisadora')+
- inp('rg','Número do RG *',p.rg)+inp('issuer','Órgão emissor *',p.issuer,'text',false,'Ex.: SESP/MT')+
- inp('rg_date','Data de emissão do RG *',p.rg_date,'date')+
- '<div class="field"><label for="pis_nit">PIS / PASEP / NIT *</label><input id="pis_nit" name="pis_nit" inputmode="numeric" value="'+escapeText(p.pis_nit)+'" placeholder="Número sem espaços"><label class="check"><input id="pis_none" type="checkbox" '+(p.pis_none?'checked':'')+'>Não possuo ou não tenho esse número no momento</label></div>'+
+ inp('rg','Número do RG (se possuir)',p.rg)+inp('issuer','Órgão emissor (se possuir)',p.issuer,'text',false,'Ex.: SESP/MT')+
+ inp('rg_date','Data de emissão do RG (se possuir)',p.rg_date,'date')+
+ '<div class="field"><label for="pis_nit">PIS / PASEP / NIT (se souber)</label><input id="pis_nit" name="pis_nit" inputmode="numeric" value="'+escapeText(p.pis_nit)+'" placeholder="Número sem espaços"><label class="check"><input id="pis_none" type="checkbox" '+(p.pis_none?'checked':'')+'>Não possuo ou não tenho esse número no momento</label></div>'+
  inp('address_confirmed','Endereço completo conferido *',p.address_confirmed||p.address_informed,'text',true,'Rua/localidade, número ou s/n, bairro, cidade e UF')+
  inp('cep','CEP (se souber)',p.cep,'text',false,'00000-000')+
  '<div class="field"><label for="start_date">Primeiro dia de atividade *</label><input type="date" id="start_date" value="'+escapeText(p.start_date||'')+'" min="2026-10-27" max="2026-10-31"></div>'+
@@ -63,7 +63,7 @@ function renderPerson(p){
  '<div class="field wide"><label for="note">Observação (opcional)</label><textarea id="note" maxlength="500" placeholder="Algo que a coordenação precisa saber">'+escapeText(p.note||'')+'</textarea></div></div>'+
  '<div class="actions"><label class="check"><input id="self_confirmed" type="checkbox" '+(p.self_confirmed?'checked':'')+'>Confirmo que conferi os dados e informei os dias em que efetivamente atuei.</label></div>'+
  '<div id="feedback" role="status" aria-live="polite"></div><div class="actions"><button type="submit" class="btn" id="send">Enviar à coordenação</button></div></form>'+
- '<p class="note">Este cadastro não é uma assinatura ou declaração de recebimento. O recibo oficial será emitido posteriormente no SIGFAPEMAT.</p>';
+ '<p class="note">Esta ficha coleta dados preliminares. O sistema oficial da FAPEMAT pode exigir RG e PIS/PASEP para concluir o recibo. Não é assinatura nem comprovante de recebimento.</p>';
  const f=document.getElementById('dados');const c=document.getElementById('pis_none'),pinput=document.getElementById('pis_nit');
  function toggle(){pinput.disabled=c.checked;if(c.checked)pinput.value='';}c.addEventListener('change',toggle);toggle();
  f.addEventListener('submit',async(ev)=>{
